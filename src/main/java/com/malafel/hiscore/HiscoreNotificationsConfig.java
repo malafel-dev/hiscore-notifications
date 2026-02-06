@@ -5,9 +5,6 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
-import net.runelite.client.ui.JagexColors;
-
-import java.awt.*;
 
 @ConfigGroup("hiscorenotifications")
 public interface HiscoreNotificationsConfig extends Config
@@ -20,39 +17,63 @@ public interface HiscoreNotificationsConfig extends Config
 	String SECTION_LEADERBOARD = "leaderboardRanks";
 
 	@ConfigItem(
-			keyName = "notificationLeaderboardRankTitle",
-			name = "Title",
-			description = "Can include $rank, $xp, $player, and $skill variables.",
-			section = SECTION_LEADERBOARD,
-			position = 1
-	)
-	default String notificationLeaderboardRankTitle()
-	{
-		return "Hiscore rank milestone";
-	}
-
-	@ConfigItem(
-			keyName = "notificationLeaderboardRankText",
-			name = "Text",
-			description = "Can include $rank, $xp, $player, and $skill variables.",
-			section = SECTION_LEADERBOARD,
-			position = 2
-	)
-	default String notificationLeaderboardRankText()
-	{
-		return "Achieved rank $rank in $skill,\nsurpassing $name!";
-	}
-
-	@ConfigItem(
 			keyName = "chosenLeaderboard",
 			name = "Leaderboard",
 			description = "Configures which leaderboard to use for rank notifications.",
 			section = SECTION_LEADERBOARD,
-			position = 3
+			position = 1
 	)
 	default ValidLeaderboard chosenLeaderboard()
 	{
 		return ValidLeaderboard.NORMAL;
+	}
+
+	@ConfigItem(
+			keyName = "hundredsInterval",
+			name = "1-999 Interval",
+			description = "Configures gaps between notifications when your rank is between 1 and 999. Should be less than or equal to 1000s Interval.",
+			section = SECTION_LEADERBOARD,
+			position = 2
+	)
+	default int hundredsInterval()
+	{
+		return 1;
+	}
+
+	@ConfigItem(
+			keyName = "thousandsInterval",
+			name = "1000s Interval",
+			description = "Configures gaps between notifications when your rank is between 1000 and 9999. Should be less than or equal to 10,000s Interval.",
+			section = SECTION_LEADERBOARD,
+			position = 3
+	)
+	default int thousandsInterval()
+	{
+		return 10;
+	}
+
+	@ConfigItem(
+			keyName = "tenThousandsInterval",
+			name = "10,000s Interval",
+			description = "Configures gaps between notifications when your rank is between 10,000 and 99,999. Should be less than or equal to 100,000+ Interval.",
+			section = SECTION_LEADERBOARD,
+			position = 4
+	)
+	default int tenThousandsInterval()
+	{
+		return 100;
+	}
+
+	@ConfigItem(
+			keyName = "hundredThousandsInterval",
+			name = "100,000+ Interval",
+			description = "Configures gaps between notifications when your rank is 100,000 or higher.",
+			section = SECTION_LEADERBOARD,
+			position = 5
+	)
+	default int hundredThousandsInterval()
+	{
+		return 1000;
 	}
 
 	@ConfigSection(
@@ -325,5 +346,34 @@ public interface HiscoreNotificationsConfig extends Config
 	default boolean showSailingNotifications()
 	{
 		return true;
+	}
+
+	@ConfigSection(
+			name = "Notifications",
+			description = "Settings for the notification boxes",
+			position = 300
+	)
+	String SECTION_NOTIFICATION = "notifications";
+	@ConfigItem(
+			keyName = "notificationLeaderboardRankTitle",
+			name = "Title",
+			description = "Can include $rank, $xp, $player, and $skill variables.",
+			section = SECTION_NOTIFICATION,
+			position = 1
+	)
+	default String notificationLeaderboardRankTitle()
+	{
+		return "Hiscore rank milestone";
+	}
+	@ConfigItem(
+			keyName = "notificationLeaderboardRankText",
+			name = "Text",
+			description = "Can include $rank, $xp, $player, and $skill variables.",
+			section = SECTION_NOTIFICATION,
+			position = 2
+	)
+	default String notificationLeaderboardRankText()
+	{
+		return "Achieved rank $rank in $skill,\nsurpassing $name!";
 	}
 }

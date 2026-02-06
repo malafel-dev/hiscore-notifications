@@ -52,6 +52,11 @@ public class HiscoreNotificationsPlugin extends Plugin
 	private final Map<Skill, Integer> previousXpMap = new EnumMap<>(Skill.class);
 	private ValidLeaderboard previousChosenLeaderboard = ValidLeaderboard.NORMAL;
 
+	private int lastHundredsInterval = 1;
+	private int lastThousandsInterval = 10;
+	private int lastTenThousandsInterval = 100;
+	private int lastHundredThousandsInterval = 1000;
+
 	@Provides
 	HiscoreNotificationsConfig provideConfig(ConfigManager configManager)
 	{
@@ -62,6 +67,12 @@ public class HiscoreNotificationsPlugin extends Plugin
 	protected void startUp()
 	{
 		clientThread.invoke(this::initializePreviousXpMap);
+
+		lastHundredsInterval = config.hundredsInterval();
+		lastThousandsInterval = config.thousandsInterval();
+		lastTenThousandsInterval = config.tenThousandsInterval();
+		lastHundredThousandsInterval = config.hundredThousandsInterval();
+
 		previousChosenLeaderboard = config.chosenLeaderboard();
 		notifications.startUp();
 		leaderboardManager.reset();
@@ -104,6 +115,17 @@ public class HiscoreNotificationsPlugin extends Plugin
 		if (previousChosenLeaderboard != config.chosenLeaderboard()) {
 			leaderboardManager.reset();
 			previousChosenLeaderboard = config.chosenLeaderboard();
+		}
+
+		if (lastHundredsInterval != config.hundredsInterval() ||
+			lastThousandsInterval != config.thousandsInterval() ||
+			lastTenThousandsInterval != config.tenThousandsInterval() ||
+			lastHundredThousandsInterval != config.hundredThousandsInterval()) {
+			lastHundredsInterval = config.hundredsInterval();
+			lastThousandsInterval = config.thousandsInterval();
+			lastTenThousandsInterval = config.tenThousandsInterval();
+			lastHundredThousandsInterval = config.hundredThousandsInterval();
+			leaderboardManager.reset();
 		}
 	}
 

@@ -55,7 +55,7 @@ public class LeaderboardManager {
     @Inject
     private HiscoreNotificationsConfig config;
 
-    private static final int MIN_LEADERBOARD_SIZE = 100;
+    private static final int MIN_LEADERBOARD_SIZE = 5;
     private static final int MAX_REQUEST_RETRIES = 3;
     // The minimum level required in a skill before leaderboard tracking begins. The lower the player's level, the more
     // densely packed the leaderboards should be. A densely packed leaderboard defeats the purpose of these sorts of
@@ -226,8 +226,9 @@ public class LeaderboardManager {
                 // be allowed.
                 ArrayList<LeaderboardEntry> resultEntries = new ArrayList<>(leaderboardResult.getEntries());
                 Collections.reverse(resultEntries);
+                List<LeaderboardEntry> filteredEntries = resultEntries.stream().filter(entry -> shouldConsiderLeaderboardEntry(entry.rank)).collect(Collectors.toList());
 
-                skillState.validLeaderboardEntries.addAll(resultEntries);
+                skillState.validLeaderboardEntries.addAll(filteredEntries);
 
                 // De-dupe XP values, only keeping the best (lowest numerical) rank.
                 // TODO: Maybe revisit. This is O(n^2) and it doesn't need to be. Shouldn't matter for small lists.
@@ -240,12 +241,12 @@ public class LeaderboardManager {
 
                 // Rank is in decreasing order, meaning the final element is the lowest rank numerically.
                 skillState.nextRankToMeasure =
-                        skillState.validLeaderboardEntries.get(skillState.validLeaderboardEntries.size()-1).rank - 1;
+                        nextRankToConsider(resultEntries.get(resultEntries.size()-1).rank);
 
                 // There can be lots of people with 200m experience. Short circuit this and skip straight to rank 1 to
                 // prevent tons of pointless queries.
                 if (skillState.nextRankToMeasure > 1 &&
-                    skillState.validLeaderboardEntries.get(skillState.validLeaderboardEntries.size()-1).xp == 200_000_000) {
+                        resultEntries.get(resultEntries.size()-1).xp == 200_000_000) {
                     skillState.nextRankToMeasure = 1;
                 }
             } catch (ExecutionException e) {
@@ -304,8 +305,7 @@ public class LeaderboardManager {
             return;
         }
 
-        int nextRankToMeasure = skillState.nextRankToMeasure - 1;
-        if (nextRankToMeasure <= 0) {
+        if (skillState.nextRankToMeasure <= 0) {
             return;
         }
 
@@ -314,10 +314,68 @@ public class LeaderboardManager {
         //   ((26-1) / 25) + 1 == 2
         //   ((50-1) / 25) + 1 == 2
         //   ((51-1) / 25) + 1 == 3
-        int pageToRequest = ((nextRankToMeasure - 1) / 25) + 1;
+        int pageToRequest = ((skillState.nextRankToMeasure - 1) / 25) + 1;
 
         skillState.leaderboardFuture = leaderboardClient.lookupAsync(
                 skill, pageToRequest, LeaderboardEndpoint.valueOf(config.chosenLeaderboard().name()));
+    }
+
+    /**
+     * Determines whether a leaderboard entry should be considered a milestone based on the configured intervals.
+     *
+     * @param rank int
+     * @return int
+     */
+    private boolean shouldConsiderLeaderboardEntry(int rank) {
+        int interval;
+        if (rank > 99999) {
+            interval = config.hundredThousandsInterval();
+        } else if (rank > 9999) {
+            interval = config.tenThousandsInterval();
+        } else if (rank > 999) {
+            interval = config.thousandsInterval();
+        } else {
+            interval = config.hundredsInterval();
+        }
+        if (interval < 1) {
+            interval = 1;
+        }
+        return rank % interval == 0;
+    }
+
+    /**
+     * Given that the leaderboard entry at `rank` was just checked, returns which leaderboard entry should be considered
+     * next, based on configured notification rank intervals.
+     *
+     * @param rank int
+     * @return int
+     */
+    public int nextRankToConsider(int rank) {
+        int htInterval = Math.max(config.hundredThousandsInterval(), 1);
+        int ttInterval = Math.max(config.tenThousandsInterval(), 1);
+        int tInterval = Math.max(config.thousandsInterval(), 1);
+        int hInterval = Math.max(config.hundredsInterval(), 1);
+        if (rank > 99999) {
+            int nextRank = Util.nextRankInInterval(rank, htInterval);
+            if (nextRank <= 99999) {
+                return Util.nextRankInInterval(rank, ttInterval);
+            }
+            return nextRank;
+        } else if (rank > 9999) {
+            int nextRank = Util.nextRankInInterval(rank, ttInterval);
+            if (nextRank <= 9999) {
+                return Util.nextRankInInterval(rank, tInterval);
+            }
+            return nextRank;
+        } else if (rank > 999) {
+            int nextRank = Util.nextRankInInterval(rank, tInterval);
+            if (nextRank <= 999) {
+                return Util.nextRankInInterval(rank, hInterval);
+            }
+            return nextRank;
+        }
+
+        return Util.nextRankInInterval(rank, hInterval);
     }
 
 }

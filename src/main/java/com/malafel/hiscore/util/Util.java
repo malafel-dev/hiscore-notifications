@@ -197,4 +197,11 @@ public class Util
 	{
 		return client.getVarbitValue(IN_LMS_VARBIT) == 1;
 	}
+
+	public static int nextRankInInterval(int rank, int interval) {
+		if (rank % interval == 0) {
+			return rank - interval;
+		}
+		return (rank / interval) * interval;
+	}
 }

@@ -9,6 +9,7 @@ For customizable notifications at XP, Level, and Virtual Level intervals, check 
 ## Features:
 * Get notified when ranking up on the OSRS leaderboards.
 * Choose which leaderboard to use (Normal, Ironman, Hardcore Ironman, Ultimate Ironman).
+* Customize how often you should be notified about leaderboard ranks by setting rank intervals.
 * Enable or disable notifications for any skills.
 * Customize the notification message when gaining hiscore ranks.
 

@@ -1,0 +1,2 @@
+# Hiscore Notifications
+Gives a leagues style notification to the player when they achieve certain milestones on the OSRS hiscores. Builds on top of work done by Antimated in the Milestone Levels plugin.

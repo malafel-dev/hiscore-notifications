@@ -3,7 +3,7 @@ Gives a leagues style notification to the player when they achieve certain miles
 
 ## Credit:
 Huge credit to Antimated for their original plugin [Milestone Levels](https://github.com/Antimated/milestone-levels)!
-This plugin builds off of the great work that was done for that plugin.
+Hiscore Notifications builds off of the great work that was done in Milestone Levels.
 For customizable notifications at XP, Level, and Virtual Level intervals, check out that plugin instead of this one.
 
 ## Features:

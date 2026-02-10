@@ -30,12 +30,12 @@ public class LeaderboardParser {
         Elements rows = tableBody.children();
 
         ArrayList<LeaderboardEntry> entries = new ArrayList<LeaderboardEntry>();
-        for (Element row: rows.asList()) {
+        for (Element row: rows) {
             Elements tableData = row.children();
             // Element spaceElement = tableData.get(0);
             Element rankElement = tableData.get(1);
             Element nameElement = tableData.get(2);
-            Element nameAElement = nameElement.firstElementChild();
+            Element nameAElement = nameElement.child(0);
             Element levelElement = tableData.get(3);
             Element xpElement = tableData.get(4);
 

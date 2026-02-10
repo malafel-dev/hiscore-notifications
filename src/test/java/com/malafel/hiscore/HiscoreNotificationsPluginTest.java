@@ -1,4 +1,4 @@
-package com.malafel.leaderboard;
+package com.malafel.hiscore;
 
 import com.malafel.hiscore.HiscoreNotificationsPlugin;
 import net.runelite.client.RuneLite;

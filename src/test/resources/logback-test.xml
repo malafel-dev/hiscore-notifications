@@ -52,5 +52,5 @@
 		<appender-ref ref="STDOUT"/>
 		<appender-ref ref="FILE"/>
 	</root>
-	<logger name="com.malafel.leaderboard" level="DEBUG" />
+	<logger name="com.malafel.hiscore" level="DEBUG" />
 </configuration>

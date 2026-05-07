@@ -176,7 +176,14 @@ public class LeaderboardManager {
      */
     private void ingestPlayerHiscoreData() {
         for (Skill s: Skill.values()) {
-            skillStates.get(s).nextRankToMeasure = playerHiscore.getSkill(HiscoreSkill.valueOf(s.name())).getRank() - 1;
+            try {
+                var skillResult = playerHiscore.getSkill(HiscoreSkill.valueOf(s.name()));
+                skillStates.get(s).nextRankToMeasure = skillResult.getRank() - 1;
+            } catch (Exception e) {
+                log.warn("Missing hiscore data for {} skill. Either level is too low for a rank, or the wrong leaderboard is being used. Check Hiscore Notifications plugin config.", s.name(), e);
+                skillStates.get(s).isDisabledFromError = true;
+            }
+
         }
     }
 

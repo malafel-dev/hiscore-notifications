@@ -29,11 +29,23 @@ public interface HiscoreNotificationsConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "hundredsInterval",
-			name = "1-999 Interval",
-			description = "Configures gaps between notifications when your rank is between 1 and 999. Should be less than or equal to 1000s Interval.",
+			keyName = "tensInterval",
+			name = "1-99 Interval",
+			description = "Configures gaps between notifications when your rank is between 1 and 99. Should be less than or equal to 100s Interval.",
 			section = SECTION_LEADERBOARD,
 			position = 2
+	)
+	default int tensInterval()
+	{
+		return 1;
+	}
+
+	@ConfigItem(
+			keyName = "hundredsInterval",
+			name = "100s Interval",
+			description = "Configures gaps between notifications when your rank is between 100 and 999. Should be less than or equal to 1000s Interval.",
+			section = SECTION_LEADERBOARD,
+			position = 3
 	)
 	default int hundredsInterval()
 	{
@@ -45,7 +57,7 @@ public interface HiscoreNotificationsConfig extends Config
 			name = "1000s Interval",
 			description = "Configures gaps between notifications when your rank is between 1000 and 9999. Should be less than or equal to 10,000s Interval.",
 			section = SECTION_LEADERBOARD,
-			position = 3
+			position = 4
 	)
 	default int thousandsInterval()
 	{
@@ -57,7 +69,7 @@ public interface HiscoreNotificationsConfig extends Config
 			name = "10,000s Interval",
 			description = "Configures gaps between notifications when your rank is between 10,000 and 99,999. Should be less than or equal to 100,000+ Interval.",
 			section = SECTION_LEADERBOARD,
-			position = 4
+			position = 5
 	)
 	default int tenThousandsInterval()
 	{
@@ -69,7 +81,7 @@ public interface HiscoreNotificationsConfig extends Config
 			name = "100,000+ Interval",
 			description = "Configures gaps between notifications when your rank is 100,000 or higher.",
 			section = SECTION_LEADERBOARD,
-			position = 5
+			position = 6
 	)
 	default int hundredThousandsInterval()
 	{

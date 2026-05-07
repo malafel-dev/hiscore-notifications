@@ -334,8 +334,10 @@ public class LeaderboardManager {
             interval = config.tenThousandsInterval();
         } else if (rank > 999) {
             interval = config.thousandsInterval();
-        } else {
+        } else if (rank > 99){
             interval = config.hundredsInterval();
+        } else {
+            interval = config.tensInterval();
         }
         if (interval < 1) {
             interval = 1;
@@ -351,31 +353,38 @@ public class LeaderboardManager {
      * @return int
      */
     public int nextRankToConsider(int rank) {
-        int htInterval = Math.max(config.hundredThousandsInterval(), 1);
-        int ttInterval = Math.max(config.tenThousandsInterval(), 1);
-        int tInterval = Math.max(config.thousandsInterval(), 1);
-        int hInterval = Math.max(config.hundredsInterval(), 1);
+        int hundredThousandsInterval = Math.max(config.hundredThousandsInterval(), 1);
+        int tenThousandsInterval = Math.max(config.tenThousandsInterval(), 1);
+        int thousandsInterval = Math.max(config.thousandsInterval(), 1);
+        int hundredsInterval = Math.max(config.hundredsInterval(), 1);
+        int tensInterval = Math.max(config.tensInterval(), 1);
         if (rank > 99999) {
-            int nextRank = Util.nextRankInInterval(rank, htInterval);
+            int nextRank = Util.nextRankInInterval(rank, hundredThousandsInterval);
             if (nextRank <= 99999) {
-                return Util.nextRankInInterval(rank, ttInterval);
+                return Util.nextRankInInterval(rank, tenThousandsInterval);
             }
             return nextRank;
         } else if (rank > 9999) {
-            int nextRank = Util.nextRankInInterval(rank, ttInterval);
+            int nextRank = Util.nextRankInInterval(rank, tenThousandsInterval);
             if (nextRank <= 9999) {
-                return Util.nextRankInInterval(rank, tInterval);
+                return Util.nextRankInInterval(rank, thousandsInterval);
             }
             return nextRank;
         } else if (rank > 999) {
-            int nextRank = Util.nextRankInInterval(rank, tInterval);
+            int nextRank = Util.nextRankInInterval(rank, thousandsInterval);
             if (nextRank <= 999) {
-                return Util.nextRankInInterval(rank, hInterval);
+                return Util.nextRankInInterval(rank, hundredsInterval);
+            }
+            return nextRank;
+        } else if (rank > 99) {
+            int nextRank = Util.nextRankInInterval(rank, hundredsInterval);
+            if (nextRank <= 99) {
+                return Util.nextRankInInterval(rank, tensInterval);
             }
             return nextRank;
         }
 
-        return Util.nextRankInInterval(rank, hInterval);
+        return Util.nextRankInInterval(rank, tensInterval);
     }
 
 }

@@ -52,6 +52,7 @@ public class HiscoreNotificationsPlugin extends Plugin
 	private final Map<Skill, Integer> previousXpMap = new EnumMap<>(Skill.class);
 	private ValidLeaderboard previousChosenLeaderboard = ValidLeaderboard.NORMAL;
 
+	private int lastTensInterval = 1;
 	private int lastHundredsInterval = 1;
 	private int lastThousandsInterval = 10;
 	private int lastTenThousandsInterval = 100;
@@ -68,6 +69,7 @@ public class HiscoreNotificationsPlugin extends Plugin
 	{
 		clientThread.invoke(this::initializePreviousXpMap);
 
+		lastTensInterval = config.tensInterval();
 		lastHundredsInterval = config.hundredsInterval();
 		lastThousandsInterval = config.thousandsInterval();
 		lastTenThousandsInterval = config.tenThousandsInterval();
@@ -117,10 +119,12 @@ public class HiscoreNotificationsPlugin extends Plugin
 			previousChosenLeaderboard = config.chosenLeaderboard();
 		}
 
-		if (lastHundredsInterval != config.hundredsInterval() ||
+		if (lastTensInterval != config.tensInterval() ||
+			lastHundredsInterval != config.hundredsInterval() ||
 			lastThousandsInterval != config.thousandsInterval() ||
 			lastTenThousandsInterval != config.tenThousandsInterval() ||
 			lastHundredThousandsInterval != config.hundredThousandsInterval()) {
+			lastTensInterval = config.tensInterval();
 			lastHundredsInterval = config.hundredsInterval();
 			lastThousandsInterval = config.thousandsInterval();
 			lastTenThousandsInterval = config.tenThousandsInterval();

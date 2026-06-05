@@ -1,13 +1,17 @@
 package com.malafel.hiscore.leaderboard;
 
 import com.google.gson.Gson;
+import com.malafel.hiscore.util.RateLimitedHttpClientInterface;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Skill;
 import okhttp3.*;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Facilitates making requests to the OSRS hiscores website, specifically for "leaderboard" pages under specific skills.
@@ -19,12 +23,14 @@ import java.util.concurrent.CompletableFuture;
 public class LeaderboardClient {
     private final OkHttpClient client;
     private final Gson gson;
+    private final RateLimitedHttpClientInterface clientInterface;
 
     @Inject
-    private LeaderboardClient(OkHttpClient client, Gson gson)
+    private LeaderboardClient(OkHttpClient client, Gson gson, RateLimitedHttpClientInterface clientInterface)
     {
         this.client = client;
         this.gson = gson;
+        this.clientInterface = clientInterface;
     }
 
     public CompletableFuture<LeaderboardResult> lookupAsync(Skill skill, int page, LeaderboardEndpoint endpoint) {
@@ -37,26 +43,14 @@ public class LeaderboardClient {
             .url(url)
             .build();
 
-        CompletableFuture<LeaderboardResult> future = new CompletableFuture<>();
-        client.newCall(request).enqueue(new Callback() {
+        return clientInterface.call(request).thenApply(new Function<Response, LeaderboardResult>() {
+            @SneakyThrows
             @Override
-            public void onFailure(Call call, IOException e) { future.completeExceptionally(e); }
-            @Override
-            public void onResponse(Call call, Response response) {
-                try (response) {
-                    LeaderboardResult result;
-                    try {
-                        String documentContents = response.body().string();
-                        result = LeaderboardParser.parseDocument(documentContents);
-                        future.complete(result);
-                    } catch (Exception e) {
-                        future.completeExceptionally(e);
-                    }
-                }
+            public LeaderboardResult apply(Response response) {
+                String documentContents = response.body().string();
+                return LeaderboardParser.parseDocument(documentContents);
             }
         });
-
-        return future;
     }
 
 

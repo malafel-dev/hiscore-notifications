@@ -3,10 +3,9 @@ package com.malafel.hiscore;
 import com.google.inject.Provides;
 import javax.inject.Inject;
 
-import com.malafel.hiscore.leaderboard.LeaderboardEntry;
-import com.malafel.hiscore.leaderboard.LeaderboardManager;
-import com.malafel.hiscore.leaderboard.ValidLeaderboard;
+import com.malafel.hiscore.leaderboard.*;
 import com.malafel.hiscore.notifications.NotificationManager;
+import com.malafel.hiscore.util.RateLimitedHttpClientInterface;
 import com.malafel.hiscore.util.Util;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
@@ -48,6 +47,9 @@ public class HiscoreNotificationsPlugin extends Plugin
 
 	@Inject
 	private LeaderboardManager leaderboardManager;
+
+	@Inject
+    RateLimitedHttpClientInterface clientInterface;
 
 	private final Map<Skill, Integer> previousXpMap = new EnumMap<>(Skill.class);
 	private ValidLeaderboard previousChosenLeaderboard = ValidLeaderboard.NORMAL;
@@ -108,6 +110,7 @@ public class HiscoreNotificationsPlugin extends Plugin
 
 	@Subscribe
 	public void onGameTick(GameTick event) {
+		clientInterface.process(event);
 		leaderboardManager.process(event);
 	}
 

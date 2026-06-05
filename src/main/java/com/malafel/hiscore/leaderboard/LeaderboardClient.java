@@ -33,7 +33,7 @@ public class LeaderboardClient {
         this.clientInterface = clientInterface;
     }
 
-    public CompletableFuture<LeaderboardResult> lookupAsync(Skill skill, int page, LeaderboardEndpoint endpoint) {
+    public CompletableFuture<SkillLeaderboardResult> lookupSkillAsync(Skill skill, int page, LeaderboardEndpoint endpoint) {
         HttpUrl url = endpoint.getLeaderboardURL().newBuilder()
             .addQueryParameter("table", String.valueOf(SkillTable.valueOf(skill.name()).tableNumber))
             .addQueryParameter("page", String.valueOf(page))
@@ -43,15 +43,34 @@ public class LeaderboardClient {
             .url(url)
             .build();
 
-        return clientInterface.call(request).thenApply(new Function<Response, LeaderboardResult>() {
+        return clientInterface.call(request).thenApply(new Function<Response, SkillLeaderboardResult>() {
             @SneakyThrows
             @Override
-            public LeaderboardResult apply(Response response) {
+            public SkillLeaderboardResult apply(Response response) {
                 String documentContents = response.body().string();
-                return LeaderboardParser.parseDocument(documentContents);
+                return LeaderboardParser.parseSkillDocument(documentContents);
             }
         });
     }
 
+    public CompletableFuture<BossLeaderboardResult> lookupBossAsync(BossInfo boss, int page, LeaderboardEndpoint endpoint) {
+        HttpUrl url = endpoint.getLeaderboardURL().newBuilder()
+                .addQueryParameter("category_type", "1")
+                .addQueryParameter("table", String.valueOf(boss.tableNumber))
+                .addQueryParameter("page", String.valueOf(page))
+                .build();
 
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        return clientInterface.call(request).thenApply(new Function<Response, BossLeaderboardResult>() {
+            @SneakyThrows
+            @Override
+            public BossLeaderboardResult apply(Response response) {
+                String documentContents = response.body().string();
+                return LeaderboardParser.parseBossDocument(documentContents);
+            }
+        });
+    }
 }

@@ -16,10 +16,12 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.StatChanged;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.config.RuneLiteConfig;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.chatcommands.ChatCommandsPlugin;
 import net.runelite.client.ui.JagexColors;
 import net.runelite.client.util.QuantityFormatter;
 
@@ -33,6 +35,8 @@ import java.util.Map;
 )
 public class HiscoreNotificationsPlugin extends Plugin
 {
+	private static final String CHAT_COMMANDS_PLUGIN_NAME = ChatCommandsPlugin.class.getSimpleName().toLowerCase();
+
 	@Inject
 	private Client client;
 
@@ -41,6 +45,9 @@ public class HiscoreNotificationsPlugin extends Plugin
 
 	@Inject
 	private HiscoreNotificationsConfig config;
+
+	@Inject
+	private ConfigManager configManager;
 
 	@Inject
 	private NotificationManager notifications;
@@ -112,11 +119,26 @@ public class HiscoreNotificationsPlugin extends Plugin
 	public void onGameTick(GameTick event) {
 		clientInterface.process(event);
 		leaderboardManager.process(event);
+		clientInterface.process(event);
+	}
+
+	private boolean isChatCommandsDisabled() {
+		return "false".equals(configManager.getConfiguration(RuneLiteConfig.GROUP_NAME, CHAT_COMMANDS_PLUGIN_NAME));
 	}
 
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event)
 	{
+		// Chat commands plugin required for detecting KC changes. It makes this information available through config
+		// changes in the `killcount` group.
+		if (event.getGroup().equals("killcount") && !isChatCommandsDisabled()) {
+			if (event.getNewValue() != null) {
+				String boss = event.getKey();
+				int kc = Integer.parseInt(event.getNewValue());
+				onKcChanged(boss, kc);
+			}
+		}
+
 		if (previousChosenLeaderboard != config.chosenLeaderboard()) {
 			leaderboardManager.reset();
 			previousChosenLeaderboard = config.chosenLeaderboard();
@@ -159,17 +181,41 @@ public class HiscoreNotificationsPlugin extends Plugin
 			return;
 		}
 
-		final List<LeaderboardEntry> milestoneLeaderboardEntries = getMilestoneLeaderboardEntries(skill, previousXp, currentXp);
+		final List<SkillLeaderboardEntry> milestoneLeaderboardEntries = getMilestoneXpLeaderboardEntries(skill, previousXp, currentXp);
 		if (shouldNotifyForSkill(skill) && !milestoneLeaderboardEntries.isEmpty())
 		{
-			log.debug("Milestone leaderboard rank to notify for {}", skill.getName());
+			log.debug("Milestone leaderboard skill rank to notify for {}", skill.getName());
 
-			for (LeaderboardEntry entry: milestoneLeaderboardEntries) {
-				notifyLeaderboard(skill, entry);
+			for (SkillLeaderboardEntry entry: milestoneLeaderboardEntries) {
+				notifySkillLeaderboard(skill, entry);
 			}
 		}
 	}
 
+	private void onKcChanged(String boss, int kc) {
+		final BossInfo bossInfo = BossInfo.fromName(boss);
+		if (bossInfo == BossInfo.INVALID) {
+			return;
+		}
+
+		// Only standard worlds are allowed, and if a player is in LMS, we should abort.
+		if (!Util.isStandardWorld(client) || Util.isInLMS(client))
+		{
+			log.debug("Not on a standard world nor in LMS.");
+			return;
+		}
+
+		leaderboardManager.updateBossKc(bossInfo, kc);
+		final List<BossLeaderboardEntry> milestoneLeaderboardEntries = getMilestoneKcLeaderboardEntries(bossInfo, kc);
+		if (shouldNotifyForBoss(bossInfo) && !milestoneLeaderboardEntries.isEmpty())
+		{
+			log.debug("Milestone leaderboard boss KC rank to notify for {}", bossInfo.chatCommandsLongName);
+
+			for (BossLeaderboardEntry entry: milestoneLeaderboardEntries) {
+				notifyBossLeaderboard(bossInfo, entry);
+			}
+		}
+	}
 
 	/**
 	 * Gets the list of milestone xp values between two numbers from values that were fetched from the OSRS hiscores
@@ -179,8 +225,19 @@ public class HiscoreNotificationsPlugin extends Plugin
 	 * @param currentXp int
 	 * @return List<LeaderboardEntry>
 	 */
-	private List<LeaderboardEntry> getMilestoneLeaderboardEntries(Skill skill, int previousXp, int currentXp) {
-		return leaderboardManager.getMilestoneLeaderboardEntries(skill, previousXp, currentXp);
+	private List<SkillLeaderboardEntry> getMilestoneXpLeaderboardEntries(Skill skill, int previousXp, int currentXp) {
+		return leaderboardManager.getMilestoneSkillLeaderboardEntries(skill, previousXp, currentXp);
+	}
+
+	/**
+	 * Gets the list of milestone kc values between two numbers from values that were fetched from the OSRS hiscores
+	 *
+	 * @param boss BossInfo
+	 * @param currentKc int
+	 * @return List<LeaderboardEntry>
+	 */
+	private List<BossLeaderboardEntry> getMilestoneKcLeaderboardEntries(BossInfo boss, int currentKc) {
+		return leaderboardManager.getMilestoneBossLeaderboardEntries(boss, currentKc);
 	}
 
 	/**
@@ -207,10 +264,10 @@ public class HiscoreNotificationsPlugin extends Plugin
 	 * @param skill Skill
 	 * @param leaderboardEntry LeaderboardEntry
 	 */
-	private void notifyLeaderboard(Skill skill, LeaderboardEntry leaderboardEntry)
+	private void notifySkillLeaderboard(Skill skill, SkillLeaderboardEntry leaderboardEntry)
 	{
-		String title = Util.replaceLeaderboardValues(config.notificationLeaderboardRankTitle(), skill, leaderboardEntry);
-		String text = Util.replaceLeaderboardValues(config.notificationLeaderboardRankText(), skill, leaderboardEntry);
+		String title = Util.replaceSkillLeaderboardValues(config.notificationLeaderboardRankTitle(), skill, leaderboardEntry);
+		String text = Util.replaceSkillLeaderboardValues(config.notificationLeaderboardRankText(), skill, leaderboardEntry);
 		int color = Util.getIntValue(JagexColors.DARK_ORANGE_INTERFACE_TEXT);
 
 		log.debug("Notify leaderboard milestone reached for {} to rank {} (xp {})",
@@ -229,5 +286,35 @@ public class HiscoreNotificationsPlugin extends Plugin
 	private boolean shouldNotifyForSkill(Skill skill)
 	{
 		return Util.skillEnabledInConfig(config, skill);
+	}
+
+	/**
+	 * Adds a leaderboard rank notification to the queue if certain requirements are met.
+	 *
+	 * @param boss BossInfo
+	 * @param leaderboardEntry LeaderboardEntry
+	 */
+	private void notifyBossLeaderboard(BossInfo boss, BossLeaderboardEntry leaderboardEntry)
+	{
+		String title = Util.replaceBossLeaderboardValues(config.notificationBossLeaderboardRankTitle(), boss, leaderboardEntry);
+		String text = Util.replaceBossLeaderboardValues(config.notificationBossLeaderboardRankText(), boss, leaderboardEntry);
+		int color = Util.getIntValue(JagexColors.DARK_ORANGE_INTERFACE_TEXT);
+
+		log.debug("Notify leaderboard milestone reached for {} to rank {} (kc {})",
+				boss.chatCommandsLongName,
+				QuantityFormatter.formatNumber(leaderboardEntry.rank),
+				QuantityFormatter.formatNumber(leaderboardEntry.score));
+		notifications.addNotification(title, text, color);
+	}
+
+	/**
+	 * Check if we should notify for the given skill based off of our config settings.
+	 *
+	 * @param bossInfo BossInfo
+	 * @return boolean
+	 */
+	private boolean shouldNotifyForBoss(BossInfo bossInfo)
+	{
+		return true;
 	}
 }

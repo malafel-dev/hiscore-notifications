@@ -76,6 +76,8 @@ public class LeaderboardManager {
     private int hiscoreRetryCount = 0;
 
     private final Map<Skill, LeaderboardSkillState> skillStates = new EnumMap<>(Skill.class);
+    private final Map<BossInfo, LeaderboardBossState> bossStates = new EnumMap<>(BossInfo.class);
+
     private boolean wasEnabled = false;
 
     LeaderboardManager() {
@@ -107,12 +109,27 @@ public class LeaderboardManager {
      * @param currentXp int
      * @return List<LeaderboardEntry>
      */
-    public List<LeaderboardEntry> getMilestoneLeaderboardEntries(Skill skill, int previousXp, int currentXp) {
+    public List<SkillLeaderboardEntry> getMilestoneSkillLeaderboardEntries(Skill skill, int previousXp, int currentXp) {
         LeaderboardSkillState skillState = skillStates.get(skill);
         return skillState.validLeaderboardEntries.stream()
                                                  .filter(entry -> entry.xp > previousXp && entry.xp < currentXp)
                                                  .distinct()
                                                  .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns all `LeaderboardEntry` values for a skill whose xp value lies between previousXP and currentXP exclusive.
+     *
+     * @param boss BossInfo
+     * @param currentKc int
+     * @return List<LeaderboardEntry>
+     */
+    public List<BossLeaderboardEntry> getMilestoneBossLeaderboardEntries(BossInfo boss, int currentKc) {
+        LeaderboardBossState bossState = bossStates.get(boss);
+        return bossState.validLeaderboardEntries.stream()
+                .filter(entry -> entry.score < currentKc)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     /**
@@ -126,6 +143,9 @@ public class LeaderboardManager {
         for (Skill s: Skill.values()) {
             skillStates.put(s, new LeaderboardSkillState());
         }
+        for (BossInfo b: BossInfo.values()) {
+            bossStates.put(b, new LeaderboardBossState());
+        }
     }
 
     private void processAwaitingPlayerName() {
@@ -138,6 +158,11 @@ public class LeaderboardManager {
             hiscoreFuture = hiscoreClient.lookupAsync(client.getLocalPlayer().getName(), HiscoreEndpoint.valueOf(config.chosenLeaderboard().name()));
             state = LeaderboardManagerState.AWAITING_PLAYER_HISCORE;
         }
+    }
+
+    public void updateBossKc(BossInfo boss, int kc) {
+        var bossState = bossStates.get(boss);
+        bossState.currentKc = kc;
     }
 
     private void processAwaitingPlayerHiscore() {
@@ -183,7 +208,21 @@ public class LeaderboardManager {
                 log.warn("Missing hiscore data for {} skill. Either level is too low for a rank, or the wrong leaderboard is being used. Check Hiscore Notifications plugin config.", s.name(), e);
                 skillStates.get(s).isDisabledFromError = true;
             }
+        }
 
+        for (BossInfo b: BossInfo.values()) {
+            if (b == BossInfo.INVALID) {
+                continue;
+            }
+
+            try {
+                var bossResult = playerHiscore.getSkill(HiscoreSkill.valueOf(b.name()));
+                bossStates.get(b).nextRankToMeasure = bossResult.getRank() - 1;
+                bossStates.get(b).currentKc = bossResult.getLevel();
+            } catch (Exception e) {
+                log.warn("Missing hiscore data for {}. Either KC is too low for a rank, or the wrong leaderboard is being used. Check Hiscore Notifications plugin config.", b.name(), e);
+                bossStates.get(b).isDisabledFromError = true;
+            }
         }
     }
 
@@ -195,6 +234,14 @@ public class LeaderboardManager {
         for (Skill s: Skill.values()) {
             if (Util.skillEnabledInConfig(config, s)) {
                 processSkill(s);
+            }
+        }
+        if (config.showBossNotifications()) {
+            for (BossInfo b: BossInfo.values()) {
+                if (b == BossInfo.INVALID) {
+                    continue;
+                }
+                processBoss(b);
             }
         }
     }
@@ -216,7 +263,7 @@ public class LeaderboardManager {
 
             try {
                 // Success case: we just got a new leaderboard page. Now add that data to `skillState`.
-                LeaderboardResult leaderboardResult = skillState.leaderboardFuture.get();
+                SkillLeaderboardResult leaderboardResult = skillState.leaderboardFuture.get();
                 skillState.leaderboardFuture = null;
                 skillState.currentPageRetryCount = 0;
 
@@ -231,9 +278,9 @@ public class LeaderboardManager {
                 // checked. It's hard to say how this ought to be handled. The leaderboard is constantly changing and
                 // this plugin is using an approximation of the current leaderboar state. For now, duplicates will
                 // be allowed.
-                ArrayList<LeaderboardEntry> resultEntries = new ArrayList<>(leaderboardResult.getEntries());
+                ArrayList<SkillLeaderboardEntry> resultEntries = new ArrayList<>(leaderboardResult.getEntries());
                 Collections.reverse(resultEntries);
-                List<LeaderboardEntry> filteredEntries = resultEntries.stream().filter(entry -> shouldConsiderLeaderboardEntry(entry.rank)).collect(Collectors.toList());
+                List<SkillLeaderboardEntry> filteredEntries = resultEntries.stream().filter(entry -> shouldConsiderLeaderboardEntry(entry.rank)).collect(Collectors.toList());
 
                 skillState.validLeaderboardEntries.addAll(filteredEntries);
 
@@ -301,6 +348,91 @@ public class LeaderboardManager {
         }
     }
 
+    private void processBoss(BossInfo boss) {
+        LeaderboardBossState bossState = bossStates.get(boss);
+        if (bossState.isDisabledFromError ||
+            bossState.nextRankToMeasure < 1) {
+            return;
+        }
+
+        // There might already be an outgoing request for more leaderboard data. Nothing can be done until this is
+        // future is completed.
+        if (bossState.leaderboardFuture != null) {
+            if (!bossState.leaderboardFuture.isDone()) {
+                return;
+            }
+
+            try {
+                // Success case: we just got a new leaderboard page. Now add that data to `bossState`.
+                BossLeaderboardResult leaderboardResult = bossState.leaderboardFuture.get();
+                bossState.leaderboardFuture = null;
+                bossState.currentPageRetryCount = 0;
+
+                // Follows similar logic to `processSkill`.
+                ArrayList<BossLeaderboardEntry> resultEntries = new ArrayList<>(leaderboardResult.getEntries());
+                Collections.reverse(resultEntries);
+                List<BossLeaderboardEntry> filteredEntries = resultEntries.stream().filter(entry ->
+                        shouldConsiderLeaderboardEntry(entry.rank)).collect(Collectors.toList());
+
+                bossState.validLeaderboardEntries.addAll(filteredEntries);
+
+                // De-dupe XP values, only keeping the best (lowest numerical) rank.
+                // TODO: Maybe revisit. This is O(n^2) and it doesn't need to be. Shouldn't matter for small lists.
+                for (int i = 0; i < bossState.validLeaderboardEntries.size()-1; i++) {
+                    if (bossState.validLeaderboardEntries.get(i).score == bossState.validLeaderboardEntries.get(i+1).score) {
+                        bossState.validLeaderboardEntries.remove(i);
+                        i--;
+                    }
+                }
+
+                // Rank is in decreasing order, meaning the final element is the lowest rank numerically.
+                bossState.nextRankToMeasure =
+                        nextRankToConsider(resultEntries.get(resultEntries.size()-1).rank);
+            } catch (ExecutionException e) {
+                // Error handling has lots of failure cases. We only want to retry if there was some sort of network
+                // issue, which would manifest as an IOException wrapped with an ExecutionException from the future.
+                Throwable cause = e.getCause();
+                if (cause instanceof ParseException) {
+                    log.warn("Failed to parse fetched hiscore data for boss: {}. Disabling future lookups for that boss.", boss, cause);
+                    bossState.isDisabledFromError = true;
+                } else if (cause instanceof IOException && bossState.currentPageRetryCount < MAX_REQUEST_RETRIES) {
+                    log.warn("Failed to fetch hiscore data for boss: {} due to possible network issue. Retrying.", boss, cause);
+                    bossState.currentPageRetryCount++;
+                    bossState.leaderboardFuture = null;
+                    requestMoreLeaderboardDataForBoss(boss);
+                } else if (cause instanceof IOException) {
+                    log.warn("Failed to fetch hiscore data for boss: {} due to possible network issue. Reached max retries.", boss, cause);
+                    bossState.isDisabledFromError = true;
+                } else {
+                    log.warn("Failed to fetch hiscore data for boss: {}. Cause was unexpected. Disabling future lookups for that boss.", boss, cause);
+                    bossState.isDisabledFromError = true;
+                }
+
+            } catch (InterruptedException e) {
+                log.warn("Attempt to fetch data for boss: {} was interrupted. Disabling future lookups for that boss.", boss, e);
+                bossState.isDisabledFromError = true;
+            }
+
+        }
+        if (bossState.leaderboardFuture != null) {
+            return;
+        }
+        // This point should now only be reached if there is no leaderboardFuture (it's possible that there was one when
+        // this function was initially called).
+
+        // Trim the list of leaderboard entries to remove all KC milestones lower than the player's current XP value for
+        // this skill (include the current kc so we have a data point about who we just passed.).
+        bossState.validLeaderboardEntries =
+                bossState.validLeaderboardEntries.stream()
+                        .filter(entry -> entry.score >= bossState.currentKc)
+                        .distinct()
+                        .collect(Collectors.toList());
+
+        if (bossState.validLeaderboardEntries.size() < MIN_LEADERBOARD_SIZE) {
+            requestMoreLeaderboardDataForBoss(boss);
+        }
+    }
+
     /**
      * Helper function that initiates a request for the next leaderboard page for a skill.
      */
@@ -323,8 +455,35 @@ public class LeaderboardManager {
         //   ((51-1) / 25) + 1 == 3
         int pageToRequest = ((skillState.nextRankToMeasure - 1) / 25) + 1;
 
-        skillState.leaderboardFuture = leaderboardClient.lookupAsync(
+        skillState.leaderboardFuture = leaderboardClient.lookupSkillAsync(
                 skill, pageToRequest, LeaderboardEndpoint.valueOf(config.chosenLeaderboard().name()));
+    }
+
+    private void requestMoreLeaderboardDataForBoss(BossInfo boss) {
+        if (boss == BossInfo.INVALID) {
+            return;
+        }
+
+        LeaderboardBossState bossState = bossStates.get(boss);
+        if (bossState.leaderboardFuture != null) {
+            log.warn("Attempted to fetch more leaderboard data for boss: {} while a request was already pending. Disabling future lookups.", boss);
+            bossState.isDisabledFromError = true;
+            return;
+        }
+
+        if (bossState.nextRankToMeasure <= 0) {
+            return;
+        }
+
+        // For example: page 2 contains ranks 26 to 50 inclusive.
+        //   ((25-1) / 25) + 1 == 1
+        //   ((26-1) / 25) + 1 == 2
+        //   ((50-1) / 25) + 1 == 2
+        //   ((51-1) / 25) + 1 == 3
+        int pageToRequest = ((bossState.nextRankToMeasure - 1) / 25) + 1;
+
+        bossState.leaderboardFuture = leaderboardClient.lookupBossAsync(
+                boss, pageToRequest, LeaderboardEndpoint.valueOf(config.chosenLeaderboard().name()));
     }
 
     /**

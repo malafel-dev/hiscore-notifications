@@ -22,14 +22,14 @@ public class LeaderboardParser {
      * @return LeaderboardResult
      * @throws ParseException when parsing of the document fails for any reason.
      */
-    public static LeaderboardResult parseDocument(String documentContents) throws ParseException {
+    public static SkillLeaderboardResult parseSkillDocument(String documentContents) throws ParseException {
         Document document = Jsoup.parse(documentContents);
         Element tableOuterDiv = document.getElementById("contentHiscores");
         Element table = tableOuterDiv.selectFirst("table");
         Element tableBody = table.selectFirst("tbody");
         Elements rows = tableBody.children();
 
-        ArrayList<LeaderboardEntry> entries = new ArrayList<LeaderboardEntry>();
+        ArrayList<SkillLeaderboardEntry> entries = new ArrayList<SkillLeaderboardEntry>();
         for (Element row: rows) {
             Elements tableData = row.children();
             // Element spaceElement = tableData.get(0);
@@ -43,9 +43,34 @@ public class LeaderboardParser {
             String name = nameAElement.text();
             int level = Integer.parseInt(levelElement.text());
             int xp = NumberFormat.getNumberInstance(java.util.Locale.US).parse(xpElement.text()).intValue();
-            LeaderboardEntry entry = new LeaderboardEntry(name, rank, level, xp);
+            SkillLeaderboardEntry entry = new SkillLeaderboardEntry(name, rank, level, xp);
             entries.add(entry);
         }
-        return new LeaderboardResult(entries);
+        return new SkillLeaderboardResult(entries);
+    }
+
+    public static BossLeaderboardResult parseBossDocument(String documentContents) throws ParseException {
+        Document document = Jsoup.parse(documentContents);
+        Element tableOuterDiv = document.getElementById("contentHiscores");
+        Element table = tableOuterDiv.selectFirst("table");
+        Element tableBody = table.selectFirst("tbody");
+        Elements rows = tableBody.children();
+
+        ArrayList<BossLeaderboardEntry> entries = new ArrayList<BossLeaderboardEntry>();
+        for (Element row: rows) {
+            Elements tableData = row.children();
+            // Element spaceElement = tableData.get(0);
+            Element rankElement = tableData.get(0);
+            Element nameElement = tableData.get(1);
+            Element nameAElement = nameElement.child(0);
+            Element scoreElement = tableData.get(2);
+
+            int rank = NumberFormat.getNumberInstance(java.util.Locale.US).parse(rankElement.text()).intValue();
+            String name = nameAElement.text();
+            int score = NumberFormat.getNumberInstance(java.util.Locale.US).parse(scoreElement.text()).intValue();
+            BossLeaderboardEntry entry = new BossLeaderboardEntry(name, rank, score);
+            entries.add(entry);
+        }
+        return new BossLeaderboardResult(entries);
     }
 }

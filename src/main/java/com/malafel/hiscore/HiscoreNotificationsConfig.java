@@ -89,9 +89,27 @@ public interface HiscoreNotificationsConfig extends Config
 	}
 
 	@ConfigSection(
-			name = "Skills",
+			name = "Bosses",
 			description = "Settings for what skills we want to display notifications on",
 			position = 200
+	)
+	String SECTION_BOSSES = "bosses";
+
+	@ConfigItem(
+			keyName = "showBossNotifications",
+			name = "Enable Boss Notifications",
+			description = "Should we show notifications for boss KC ranks?",
+			section = SECTION_BOSSES
+	)
+	default boolean showBossNotifications()
+	{
+		return true;
+	}
+
+	@ConfigSection(
+			name = "Skills",
+			description = "Settings for what skills we want to display notifications on",
+			position = 300
 	)
 	String SECTION_SKILLS = "skills";
 
@@ -361,9 +379,9 @@ public interface HiscoreNotificationsConfig extends Config
 	}
 
 	@ConfigSection(
-			name = "Notifications",
+			name = "Skill Notifications",
 			description = "Settings for the notification boxes",
-			position = 300
+			position = 400
 	)
 	String SECTION_NOTIFICATION = "notifications";
 	@ConfigItem(
@@ -387,5 +405,34 @@ public interface HiscoreNotificationsConfig extends Config
 	default String notificationLeaderboardRankText()
 	{
 		return "Achieved rank $rank in $skill,\nsurpassing $name!";
+	}
+
+	@ConfigSection(
+			name = "Boss Notifications",
+			description = "Settings for the notification boxes",
+			position = 500
+	)
+	String SECTION_BOSS_NOTIFICATION = "bossNotifications";
+	@ConfigItem(
+			keyName = "notificationBossLeaderboardRankTitle",
+			name = "Title",
+			description = "Can include $rank, $kc, $player, and $boss variables.",
+			section = SECTION_BOSS_NOTIFICATION,
+			position = 1
+	)
+	default String notificationBossLeaderboardRankTitle()
+	{
+		return "Boss rank milestone";
+	}
+	@ConfigItem(
+			keyName = "notificationBossLeaderboardRankText",
+			name = "Text",
+			description = "Can include $rank, $kc, $player, and $boss variables.",
+			section = SECTION_BOSS_NOTIFICATION,
+			position = 2
+	)
+	default String notificationBossLeaderboardRankText()
+	{
+		return "Achieved rank $rank at $boss with $kc KC,\nsurpassing $name!";
 	}
 }

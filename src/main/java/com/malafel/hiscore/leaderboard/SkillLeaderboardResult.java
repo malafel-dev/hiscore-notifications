@@ -9,10 +9,10 @@ import java.util.List;
  * Array of LeaderboardEntries that result from requesting and processing a single page from the OSRS hiscores website.
  */
 @Value
-public class LeaderboardResult {
-    private List<LeaderboardEntry> entries;
+public class SkillLeaderboardResult {
+    private List<SkillLeaderboardEntry> entries;
 
-    public List<LeaderboardEntry> getEntries() {
+    public List<SkillLeaderboardEntry> getEntries() {
         return Collections.unmodifiableList(entries);
     }
 }

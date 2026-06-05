@@ -3,7 +3,9 @@ package com.malafel.hiscore.util;
 import java.awt.Color;
 
 import com.malafel.hiscore.HiscoreNotificationsConfig;
-import com.malafel.hiscore.leaderboard.LeaderboardEntry;
+import com.malafel.hiscore.leaderboard.BossInfo;
+import com.malafel.hiscore.leaderboard.BossLeaderboardEntry;
+import com.malafel.hiscore.leaderboard.SkillLeaderboardEntry;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Experience;
@@ -114,11 +116,30 @@ public class Util
 	 * @param leaderboardEntry LeaderboardEntry
 	 * @return String
 	 */
-	public static String replaceLeaderboardValues(String text, Skill skill, LeaderboardEntry leaderboardEntry)
+	public static String replaceSkillLeaderboardValues(String text, Skill skill, SkillLeaderboardEntry leaderboardEntry)
 	{
 		return Text.escapeJagex(text
 				.replaceAll("\\$skill", skill.getName())
 				.replaceAll("\\$xp", QuantityFormatter.formatNumber(leaderboardEntry.xp))
+				.replaceAll("\\$rank", QuantityFormatter.formatNumber(leaderboardEntry.rank))
+				.replaceAll("\\$player", leaderboardEntry.name)
+				.replaceAll("\\$name", leaderboardEntry.name));
+	}
+
+	/** Replaces the words $skill, $xp, $rank, and $player from the text to the passed skill and data from
+	 * leaderboardEntry
+	 *
+	 * @param text  String
+	 * @param boss BossInfo
+	 * @param leaderboardEntry LeaderboardEntry
+	 * @return String
+	 */
+	public static String replaceBossLeaderboardValues(String text, BossInfo boss, BossLeaderboardEntry leaderboardEntry)
+	{
+		return Text.escapeJagex(text
+				.replaceAll("\\$boss", boss.chatCommandsLongName)
+				.replaceAll("\\$kc", QuantityFormatter.formatNumber(leaderboardEntry.score))
+				.replaceAll("\\$score", QuantityFormatter.formatNumber(leaderboardEntry.score))
 				.replaceAll("\\$rank", QuantityFormatter.formatNumber(leaderboardEntry.rank))
 				.replaceAll("\\$player", leaderboardEntry.name)
 				.replaceAll("\\$name", leaderboardEntry.name));

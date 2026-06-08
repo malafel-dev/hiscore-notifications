@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Singleton
 public class RateLimitedHttpClientInterface {
     private static final int MAX_ACTIVE_CALLS = 4;
-    private static final Duration MIN_TIME_BETWEEN_CALLS = Duration.ofMillis(300);
+    private static final Duration MIN_TIME_BETWEEN_CALLS = Duration.ofMillis(5000);
 
     private class CallWrapper {
         public CompletableFuture<Response> future;

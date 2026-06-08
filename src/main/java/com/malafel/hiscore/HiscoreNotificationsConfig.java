@@ -31,7 +31,7 @@ public interface HiscoreNotificationsConfig extends Config
 	@ConfigItem(
 			keyName = "tensInterval",
 			name = "1-99 Interval",
-			description = "Configures gaps between notifications when your rank is between 1 and 99. Should be less than or equal to 100s Interval.",
+			description = "Configures gaps between notifications when your rank is between 1 and 99. Should be less than or equal to 100s Interval. 0 disables notifications for all ranks except 1.",
 			section = SECTION_LEADERBOARD,
 			position = 2
 	)
@@ -43,7 +43,7 @@ public interface HiscoreNotificationsConfig extends Config
 	@ConfigItem(
 			keyName = "hundredsInterval",
 			name = "100s Interval",
-			description = "Configures gaps between notifications when your rank is between 100 and 999. Should be less than or equal to 1000s Interval.",
+			description = "Configures gaps between notifications when your rank is between 100 and 999. Should be less than or equal to 1000s Interval. 0 disables notifications for this range and higher.",
 			section = SECTION_LEADERBOARD,
 			position = 3
 	)
@@ -55,7 +55,7 @@ public interface HiscoreNotificationsConfig extends Config
 	@ConfigItem(
 			keyName = "thousandsInterval",
 			name = "1000s Interval",
-			description = "Configures gaps between notifications when your rank is between 1000 and 9999. Should be less than or equal to 10,000s Interval.",
+			description = "Configures gaps between notifications when your rank is between 1000 and 9999. Should be less than or equal to 10,000s Interval. 0 disables notifications for this range and higher.",
 			section = SECTION_LEADERBOARD,
 			position = 4
 	)
@@ -67,7 +67,7 @@ public interface HiscoreNotificationsConfig extends Config
 	@ConfigItem(
 			keyName = "tenThousandsInterval",
 			name = "10,000s Interval",
-			description = "Configures gaps between notifications when your rank is between 10,000 and 99,999. Should be less than or equal to 100,000+ Interval.",
+			description = "Configures gaps between notifications when your rank is between 10,000 and 99,999. Should be less than or equal to 100,000+ Interval. 0 disables notifications for this range and higher.",
 			section = SECTION_LEADERBOARD,
 			position = 5
 	)
@@ -79,7 +79,7 @@ public interface HiscoreNotificationsConfig extends Config
 	@ConfigItem(
 			keyName = "hundredThousandsInterval",
 			name = "100,000+ Interval",
-			description = "Configures gaps between notifications when your rank is 100,000 or higher.",
+			description = "Configures gaps between notifications when your rank is 100,000 or higher. 0 disables notifications for this range.",
 			section = SECTION_LEADERBOARD,
 			position = 6
 	)
@@ -98,12 +98,12 @@ public interface HiscoreNotificationsConfig extends Config
 	@ConfigItem(
 			keyName = "showBossNotifications",
 			name = "Enable Boss Notifications",
-			description = "Should we show notifications for boss KC ranks?",
+			description = "Should we show notifications for boss KC ranks? Note: this results in lots of network traffic to the OSRS hiscores server, and can get your IP temporarily blocked from accessing that website.",
 			section = SECTION_BOSSES
 	)
 	default boolean showBossNotifications()
 	{
-		return true;
+		return false;
 	}
 
 	@ConfigSection(

@@ -57,7 +57,7 @@ public class LeaderboardManager {
     @Inject
     private HiscoreNotificationsConfig config;
 
-    private static final int MIN_LEADERBOARD_SIZE = 5;
+    private static final int MIN_LEADERBOARD_SIZE = 2;
     private static final int MAX_REQUEST_RETRIES = 3;
     // The minimum level required in a skill before leaderboard tracking begins. The lower the player's level, the more
     // densely packed the leaderboards should be. A densely packed leaderboard defeats the purpose of these sorts of

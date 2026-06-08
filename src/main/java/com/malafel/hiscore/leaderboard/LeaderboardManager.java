@@ -21,6 +21,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.min;
+
 /**
  * Issues requests and processes results from the OSRS hiscores website for each tracked skill to maintain lists of XP
  * milestones. Also controls rate limiting and retries, to limit strain on the hiscores page.
@@ -496,17 +498,29 @@ public class LeaderboardManager {
      * @return int
      */
     private boolean shouldConsiderLeaderboardEntry(int rank) {
+        Util.IntervalConfig ic = new Util.IntervalConfig();
+        ic.tensInterval = config.tensInterval();
+        ic.hundredsInterval = config.hundredsInterval();
+        ic.thousandsInterval = config.thousandsInterval();
+        ic.tenThousandsInterval = config.tenThousandsInterval();
+        ic.hundredThousandsInterval = config.hundredThousandsInterval();
+        ic = Util.cleanupIntervalData(ic);
+
+        if (rank > ic.firstRankToConsider) {
+            return false;
+        }
+
         int interval;
         if (rank > 99999) {
-            interval = config.hundredThousandsInterval();
+            interval = ic.hundredThousandsInterval;
         } else if (rank > 9999) {
-            interval = config.tenThousandsInterval();
+            interval = ic.tenThousandsInterval;
         } else if (rank > 999) {
-            interval = config.thousandsInterval();
+            interval = ic.thousandsInterval;
         } else if (rank > 99){
-            interval = config.hundredsInterval();
+            interval = ic.hundredsInterval;
         } else {
-            interval = config.tensInterval();
+            interval = ic.tensInterval;
         }
         if (interval < 1) {
             interval = 1;
@@ -522,38 +536,45 @@ public class LeaderboardManager {
      * @return int
      */
     public int nextRankToConsider(int rank) {
-        int hundredThousandsInterval = Math.max(config.hundredThousandsInterval(), 1);
-        int tenThousandsInterval = Math.max(config.tenThousandsInterval(), 1);
-        int thousandsInterval = Math.max(config.thousandsInterval(), 1);
-        int hundredsInterval = Math.max(config.hundredsInterval(), 1);
-        int tensInterval = Math.max(config.tensInterval(), 1);
+        Util.IntervalConfig ic = new Util.IntervalConfig();
+        ic.tensInterval = config.tensInterval();
+        ic.hundredsInterval = config.hundredsInterval();
+        ic.thousandsInterval = config.thousandsInterval();
+        ic.tenThousandsInterval = config.tenThousandsInterval();
+        ic.hundredThousandsInterval = config.hundredThousandsInterval();
+        ic = Util.cleanupIntervalData(ic);
+
+        if (rank > ic.firstRankToConsider) {
+            return ic.firstRankToConsider;
+        }
+
         if (rank > 99999) {
-            int nextRank = Util.nextRankInInterval(rank, hundredThousandsInterval);
+            int nextRank = Util.nextRankInInterval(rank, ic.hundredThousandsInterval);
             if (nextRank <= 99999) {
-                return Util.nextRankInInterval(rank, tenThousandsInterval);
+                return Util.nextRankInInterval(rank, ic.tenThousandsInterval);
             }
             return nextRank;
         } else if (rank > 9999) {
-            int nextRank = Util.nextRankInInterval(rank, tenThousandsInterval);
+            int nextRank = Util.nextRankInInterval(rank, ic.tenThousandsInterval);
             if (nextRank <= 9999) {
-                return Util.nextRankInInterval(rank, thousandsInterval);
+                return Util.nextRankInInterval(rank, ic.thousandsInterval);
             }
             return nextRank;
         } else if (rank > 999) {
-            int nextRank = Util.nextRankInInterval(rank, thousandsInterval);
+            int nextRank = Util.nextRankInInterval(rank, ic.thousandsInterval);
             if (nextRank <= 999) {
-                return Util.nextRankInInterval(rank, hundredsInterval);
+                return Util.nextRankInInterval(rank, ic.hundredsInterval);
             }
             return nextRank;
         } else if (rank > 99) {
-            int nextRank = Util.nextRankInInterval(rank, hundredsInterval);
+            int nextRank = Util.nextRankInInterval(rank, ic.hundredsInterval);
             if (nextRank <= 99) {
-                return Util.nextRankInInterval(rank, tensInterval);
+                return Util.nextRankInInterval(rank, ic.tensInterval);
             }
             return nextRank;
         }
 
-        return Util.nextRankInInterval(rank, tensInterval);
+        return Util.nextRankInInterval(rank, ic.tensInterval);
     }
 
 }

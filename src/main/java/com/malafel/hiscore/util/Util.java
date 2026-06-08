@@ -14,6 +14,8 @@ import net.runelite.client.config.RuneScapeProfileType;
 import net.runelite.client.util.QuantityFormatter;
 import net.runelite.client.util.Text;
 
+import static java.lang.Math.min;
+
 @Slf4j
 public class Util
 {
@@ -224,5 +226,52 @@ public class Util
 			return rank - interval;
 		}
 		return (rank / interval) * interval;
+	}
+
+	public static class IntervalConfig {
+		public int tensInterval;
+		public int hundredsInterval;
+		public int thousandsInterval;
+		public int tenThousandsInterval;
+		public int hundredThousandsInterval;
+		public int firstRankToConsider;
+	}
+	public static IntervalConfig cleanupIntervalData(IntervalConfig in) {
+		IntervalConfig out = new IntervalConfig();
+
+		// Arbitrary: only start considering ranks 1 million or lower.
+		out.firstRankToConsider = 1_000_000;
+		// This chain does 2 things:
+		//  1. ensure the lower rank ranges have lower intervals than higher rank ranges (preventing potential bugs).
+		//  2. if a rank-range's interval is set to 0, don't consider any ranks above that range.
+		out.hundredThousandsInterval = in.hundredThousandsInterval;
+		if (out.hundredThousandsInterval <= 0) {
+			out.firstRankToConsider = 99_999;
+			// Set this to an arbitrary high number to make the calls to `min` work.
+			out.hundredThousandsInterval = 2_000_000;
+		}
+		out.tenThousandsInterval = min(in.tenThousandsInterval, out.hundredThousandsInterval);
+		if (out.tenThousandsInterval <= 0) {
+			out.firstRankToConsider = 9999;
+			out.tenThousandsInterval = 2_000_000;
+		}
+		out.thousandsInterval = min(in.thousandsInterval, out.tenThousandsInterval);
+		if (out.thousandsInterval <= 0) {
+			out.firstRankToConsider = 999;
+			out.thousandsInterval = 2_000_000;
+		}
+		out.hundredsInterval = min(in.hundredsInterval, out.thousandsInterval);
+		if (out.hundredsInterval <= 0) {
+			out.firstRankToConsider = 99;
+			out.hundredsInterval = 2_000_000;
+		}
+		out.tensInterval = min(in.tensInterval, out.hundredsInterval);
+		if (out.tensInterval <= 0) {
+			out.firstRankToConsider = 1;
+			out.hundredsInterval = 2_000_000;
+		}
+
+
+		return out;
 	}
 }

@@ -36,6 +36,15 @@ public class RateLimitedHttpClientInterface {
         this.timeOfLastRequest = Instant.now();
     }
 
+    public void cancelAll() {
+        // This empties the queue and sets all futures as canceled. The setting to canceled is probably not needed, but
+        // it does provide context to any consumers of the Future.
+        while (!callQueue.isEmpty()) {
+            CallWrapper call = callQueue.poll();
+            call.future.cancel(true);
+        }
+    }
+
     public CompletableFuture<Response> call(Request request) {
         CallWrapper w = new CallWrapper();
         w.request = request;

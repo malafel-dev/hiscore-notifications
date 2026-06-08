@@ -136,6 +136,9 @@ public class LeaderboardManager {
      * Set LeaderboardManager to the state it should be in on initialization.
      */
     public void reset() {
+        if (leaderboardClient != null) {
+            leaderboardClient.reset();
+        }
         state = LeaderboardManagerState.AWAITING_PLAYER_NAME;
         hiscoreFuture = null;
         playerHiscore = null;

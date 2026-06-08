@@ -33,6 +33,12 @@ public class LeaderboardClient {
         this.clientInterface = clientInterface;
     }
 
+    public void reset() {
+        if (clientInterface != null) {
+            clientInterface.cancelAll();
+        }
+    }
+
     public CompletableFuture<SkillLeaderboardResult> lookupSkillAsync(Skill skill, int page, LeaderboardEndpoint endpoint) {
         HttpUrl url = endpoint.getLeaderboardURL().newBuilder()
             .addQueryParameter("table", String.valueOf(SkillTable.valueOf(skill.name()).tableNumber))
@@ -73,4 +79,5 @@ public class LeaderboardClient {
             }
         });
     }
+
 }

@@ -312,9 +312,10 @@ public class LeaderboardManager {
                 // Error handling has lots of failure cases. We only want to retry if there was some sort of network
                 // issue, which would manifest as an IOException wrapped with an ExecutionException from the future.
                 Throwable cause = e.getCause();
-                if (cause instanceof ParseException) {
-                    log.warn("Failed to parse fetched hiscore data for skill: {}. Disabling future lookups for that skill.", skill, cause);
-                    skillState.isDisabledFromError = true;
+                if (cause instanceof ParseException && skillState.currentPageRetryCount < MAX_REQUEST_RETRIES) {
+                    // This is sometimes caused by server-side rate limiting.
+                    log.warn("Failed to parse fetched hiscore data for skill: {}.", skill, cause);
+                    skillState.currentPageRetryCount++;
                 } else if (cause instanceof IOException && skillState.currentPageRetryCount < MAX_REQUEST_RETRIES) {
                     log.warn("Failed to fetch hiscore data for skill: {} due to possible network issue. Retrying.", skill, cause);
                         skillState.currentPageRetryCount++;
@@ -323,7 +324,10 @@ public class LeaderboardManager {
                 } else if (cause instanceof IOException) {
                     log.warn("Failed to fetch hiscore data for skill: {} due to possible network issue. Reached max retries.", skill, cause);
                         skillState.isDisabledFromError = true;
-                } else {
+                } else if (skillState.currentPageRetryCount >= MAX_REQUEST_RETRIES) {
+                    log.warn("Failed to fetch hiscore data for skill: {}. Reached maximum retries. Disabling future lookups for that boss.", skill, cause);
+                    skillState.isDisabledFromError = true;
+                }else {
                     log.warn("Failed to fetch hiscore data for skill: {}. Cause was unexpected. Disabling future lookups for that skill.", skill, cause);
                     skillState.isDisabledFromError = true;
                 }
@@ -397,9 +401,9 @@ public class LeaderboardManager {
                 // Error handling has lots of failure cases. We only want to retry if there was some sort of network
                 // issue, which would manifest as an IOException wrapped with an ExecutionException from the future.
                 Throwable cause = e.getCause();
-                if (cause instanceof ParseException) {
+                if (cause instanceof ParseException && bossState.currentPageRetryCount < MAX_REQUEST_RETRIES) {
                     log.warn("Failed to parse fetched hiscore data for boss: {}. Disabling future lookups for that boss.", boss, cause);
-                    bossState.isDisabledFromError = true;
+                    bossState.currentPageRetryCount++;
                 } else if (cause instanceof IOException && bossState.currentPageRetryCount < MAX_REQUEST_RETRIES) {
                     log.warn("Failed to fetch hiscore data for boss: {} due to possible network issue. Retrying.", boss, cause);
                     bossState.currentPageRetryCount++;
@@ -407,6 +411,9 @@ public class LeaderboardManager {
                     requestMoreLeaderboardDataForBoss(boss);
                 } else if (cause instanceof IOException) {
                     log.warn("Failed to fetch hiscore data for boss: {} due to possible network issue. Reached max retries.", boss, cause);
+                    bossState.isDisabledFromError = true;
+                } else if (bossState.currentPageRetryCount >= MAX_REQUEST_RETRIES) {
+                    log.warn("Failed to fetch hiscore data for boss: {}. Reached maximum retries. Disabling future lookups for that boss.", boss, cause);
                     bossState.isDisabledFromError = true;
                 } else {
                     log.warn("Failed to fetch hiscore data for boss: {}. Cause was unexpected. Disabling future lookups for that boss.", boss, cause);

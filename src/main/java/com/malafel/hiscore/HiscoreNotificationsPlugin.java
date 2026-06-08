@@ -119,7 +119,6 @@ public class HiscoreNotificationsPlugin extends Plugin
 	public void onGameTick(GameTick event) {
 		clientInterface.process(event);
 		leaderboardManager.process(event);
-		clientInterface.process(event);
 	}
 
 	private boolean isChatCommandsDisabled() {

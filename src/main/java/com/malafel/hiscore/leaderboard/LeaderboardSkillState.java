@@ -25,6 +25,10 @@ public class LeaderboardSkillState {
     // numerically, where rank 1 is lower than rank 2.
     public int nextRankToMeasure = 0;
 
+    // Enabled after the first instance of gaining xp. Required in order to issue the first request for the skill's
+    // leaderboard data, minimizing outgoing requests.
+    public boolean isActive = false;
+
     // List of leaderboard entries that are currently being used to
     public List<SkillLeaderboardEntry> validLeaderboardEntries = new ArrayList<SkillLeaderboardEntry>();
 }

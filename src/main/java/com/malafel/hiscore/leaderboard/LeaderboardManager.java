@@ -165,6 +165,16 @@ public class LeaderboardManager {
         }
     }
 
+    public void enableSkillTracking(Skill skill) {
+        var skillState = skillStates.get(skill);
+        skillState.isActive = true;
+    }
+
+    public void enableBossTracking(BossInfo boss) {
+        var bossState = bossStates.get(boss);
+        bossState.isActive = true;
+    }
+
     public void updateBossKc(BossInfo boss, int kc) {
         var bossState = bossStates.get(boss);
         bossState.currentKc = kc;
@@ -255,6 +265,7 @@ public class LeaderboardManager {
         LeaderboardSkillState skillState = skillStates.get(skill);
         if (skillState.isDisabledFromError ||
             skillState.nextRankToMeasure < 1 ||
+            !skillState.isActive ||
             playerHiscore.getSkill(HiscoreSkill.valueOf(skill.name())).getLevel() < MIN_REQUIRED_LEVEL_FOR_TRACKING) {
             return;
         }
@@ -360,6 +371,7 @@ public class LeaderboardManager {
     private void processBoss(BossInfo boss) {
         LeaderboardBossState bossState = bossStates.get(boss);
         if (bossState.isDisabledFromError ||
+            !bossState.isActive ||
             bossState.nextRankToMeasure < 1) {
             return;
         }

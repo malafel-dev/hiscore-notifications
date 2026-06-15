@@ -25,6 +25,10 @@ public class LeaderboardBossState {
     // numerically, where rank 1 is lower than rank 2.
     public int nextRankToMeasure = 0;
 
+    // Enabled after the first new KC on this boss. Required in order to issue the first request for the boss's
+    // leaderboard data, minimizing outgoing requests.
+    public boolean isActive = false;
+
     // The player's most recently known KC for the boss in question.
     public int currentKc = 0;
 

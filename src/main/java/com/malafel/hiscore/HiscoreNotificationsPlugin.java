@@ -76,8 +76,6 @@ public class HiscoreNotificationsPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		clientThread.invoke(this::initializePreviousXpMap);
-
 		lastTensInterval = config.tensInterval();
 		lastHundredsInterval = config.hundredsInterval();
 		lastThousandsInterval = config.thousandsInterval();
@@ -86,6 +84,7 @@ public class HiscoreNotificationsPlugin extends Plugin
 
 		previousChosenLeaderboard = config.chosenLeaderboard();
 		notifications.startUp();
+		previousXpMap.clear();
 		leaderboardManager.reset();
 	}
 
@@ -165,6 +164,9 @@ public class HiscoreNotificationsPlugin extends Plugin
 		final int currentXp = statChanged.getXp();
 		final int previousXp = previousXpMap.getOrDefault(skill, -1);
 
+		if (previousXp >= 0) {
+			leaderboardManager.enableSkillTracking(skill);
+		}
 		previousXpMap.put(skill, currentXp);
 
 		// Previous xp has to be set, and our current xp has to be higher or equal to the previous xp
@@ -204,6 +206,7 @@ public class HiscoreNotificationsPlugin extends Plugin
 			return;
 		}
 
+		leaderboardManager.enableBossTracking(bossInfo);
 		leaderboardManager.updateBossKc(bossInfo, kc);
 		final List<BossLeaderboardEntry> milestoneLeaderboardEntries = getMilestoneKcLeaderboardEntries(bossInfo, kc);
 		if (shouldNotifyForBoss(bossInfo) && !milestoneLeaderboardEntries.isEmpty())
@@ -237,24 +240,6 @@ public class HiscoreNotificationsPlugin extends Plugin
 	 */
 	private List<BossLeaderboardEntry> getMilestoneKcLeaderboardEntries(BossInfo boss, int currentKc) {
 		return leaderboardManager.getMilestoneBossLeaderboardEntries(boss, currentKc);
-	}
-
-	/**
-	 * Populate initial xp per skill.
-	 */
-	private void initializePreviousXpMap()
-	{
-		if (client.getGameState() != GameState.LOGGED_IN)
-		{
-			previousXpMap.clear();
-		}
-		else
-		{
-			for (final Skill skill : Skill.values())
-			{
-				previousXpMap.put(skill, client.getSkillExperience(skill));
-			}
-		}
 	}
 
 	/**

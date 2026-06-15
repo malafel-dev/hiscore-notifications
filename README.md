@@ -8,24 +8,20 @@ For customizable notifications at XP, Level, and Virtual Level intervals, check 
 
 ## Features:
 * Get notified when ranking up on the OSRS leaderboards.
-* Choose which leaderboard to use (Normal, Ironman, Hardcore Ironman, Ultimate Ironman).
+* Choose which leaderboard to use (Normal, Ironman, Hardcore Ironman, Ultimate Ironman, etc.).
 * Customize how often you should be notified about leaderboard ranks by setting rank intervals.
 * Enable or disable notifications for any skills.
 * Customize the notification message when gaining hiscore ranks.
 
 ## Notes:
 This plugin is not enabled on a skill until you reach level 60. The leaderboards at low levels are too densely 
-populated. This would result in notification spam, and spammed requests to Jagex's hiscores page, which should be 
-avoided.
+populated. This would result in notification spam, and spammed requests to Jagex's hiscores page, which we are
+trying to avoid.
 
-This plugin works by making requests to the OSRS hiscores website. That website can rate limit you if the plugin makes 
-too many requests for data. This can be caused by frequent world hopping, frequent changes to the plugin's settings,
-and enabling tracking of boss hiscores. The plugin employs several mechanisms to limit outgoing requests, but multiple
-people on the same network, or the above causes can still get you rate limited. If that happens, please disable the
-plugin and wait a while before enabling it again.
-
-Due to the rate limiting, the hiscore data can take a few minutes to initialize. If you're not getting notified about 
-ranks right after logging in, that is expected behavior.
+This plugin only starts gathering hiscore data about skills after gaining XP in the respective skill, and only
+starts tracking boss KC after your first KC of the session. This is another safeguard that exists to prevent
+sending too many requests to the hiscore servers. Because of this, notifications are not available until your
+second KC or a little while after you start gaining XP for a skill. 
 
 ## Screenshot:
 ![screenshot showing a rank up notification](screenshot.png)

@@ -98,12 +98,12 @@ public interface HiscoreNotificationsConfig extends Config
 	@ConfigItem(
 			keyName = "showBossNotifications",
 			name = "Enable Boss Notifications",
-			description = "Should we show notifications for boss KC ranks? Note: this results in lots of network traffic to the OSRS hiscores server, and can get your IP temporarily blocked from accessing that website.",
+			description = "Should we show notifications for boss KC ranks?",
 			section = SECTION_BOSSES
 	)
 	default boolean showBossNotifications()
 	{
-		return false;
+		return true;
 	}
 
 	@ConfigSection(

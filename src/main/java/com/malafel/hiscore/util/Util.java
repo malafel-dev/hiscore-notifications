@@ -140,8 +140,10 @@ public class Util
 	{
 		return Text.escapeJagex(text
 				.replaceAll("\\$boss", boss.chatCommandsLongName)
-				.replaceAll("\\$kc", QuantityFormatter.formatNumber(leaderboardEntry.score))
-				.replaceAll("\\$score", QuantityFormatter.formatNumber(leaderboardEntry.score))
+				.replaceAll("\\$passedkc", QuantityFormatter.formatNumber(leaderboardEntry.score))
+				.replaceAll("\\$passedscore", QuantityFormatter.formatNumber(leaderboardEntry.score))
+				.replaceAll("\\$kc", QuantityFormatter.formatNumber(leaderboardEntry.score+1))
+				.replaceAll("\\$score", QuantityFormatter.formatNumber(leaderboardEntry.score+1))
 				.replaceAll("\\$rank", QuantityFormatter.formatNumber(leaderboardEntry.rank))
 				.replaceAll("\\$player", leaderboardEntry.name)
 				.replaceAll("\\$name", leaderboardEntry.name));

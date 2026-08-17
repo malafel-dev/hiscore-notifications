@@ -10,9 +10,24 @@ import net.runelite.client.config.ConfigSection;
 public interface HiscoreNotificationsConfig extends Config
 {
 	@ConfigSection(
+			name = "Info",
+			description = "Please read",
+			position = 100
+	)
+	String SECTION_INFO = "info";
+	@ConfigItem(
+			keyName = "beCool",
+			name = "<html>Please be cool. Remember that people cannot opt in or out of being on the leaderboards. Please don't go reaching out to people unless you know they're welcoming friendly competition.</html>",
+			description = "Please be cool. Remember that people cannot opt in or out of being on the leaderboards. Please don't go reaching out to people unless you know they're welcoming friendly competition.",
+			section = SECTION_INFO,
+			position = 1
+	)
+	default void beCool() {}
+
+	@ConfigSection(
 			name = "Hiscore Ranks",
 			description = "All hiscore rank notification settings",
-			position = 100
+			position = 200
 	)
 	String SECTION_LEADERBOARD = "leaderboardRanks";
 
@@ -91,33 +106,65 @@ public interface HiscoreNotificationsConfig extends Config
 	@ConfigSection(
 			name = "Bosses",
 			description = "Settings for what skills we want to display notifications on",
-			position = 200
+			position = 300
 	)
 	String SECTION_BOSSES = "bosses";
 
 	@ConfigItem(
 			keyName = "showBossNotifications",
-			name = "Enable Boss Notifications",
-			description = "Should we show notifications for boss KC ranks?",
-			section = SECTION_BOSSES
+			name = "Enable Boss Pop-up Notifications",
+			description = "Should we show leagues style notifications for boss KC ranks?",
+			section = SECTION_BOSSES,
+			position = 1
 	)
 	default boolean showBossNotifications()
 	{
 		return true;
 	}
 
+	@ConfigItem(
+			keyName = "showBossChatNotifications",
+			name = "Enable Boss Game Chat Notifications",
+			description = "Should we show game chat notifications for boss KC ranks?",
+			section = SECTION_BOSSES,
+			position = 2
+	)
+	default boolean showBossChatNotifications()
+	{
+		return false;
+	}
+
 	@ConfigSection(
 			name = "Skills",
 			description = "Settings for what skills we want to display notifications on",
-			position = 300
+			position = 400
 	)
 	String SECTION_SKILLS = "skills";
+
+	@ConfigItem(
+			keyName = "showSkillPopupNotifications",
+			name = "Enable Skill Pop-up Notifications",
+			description = "Should we show leagues style notifications for skill ranks?",
+			section = SECTION_SKILLS,
+			position = 1
+	)
+	default boolean showSkillPopupNotifications() { return true; }
+
+	@ConfigItem(
+			keyName = "showSkillChatNotifications",
+			name = "Enable Skill Game Chat Notifications",
+			description = "Should we show game chat notifications for skill ranks?",
+			section = SECTION_SKILLS,
+			position = 2
+	)
+	default boolean showSkillChatNotifications() { return false; }
 
 	@ConfigItem(
 			keyName = "showAttackNotifications",
 			name = "Attack",
 			description = "Should we show Attack notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 3
 	)
 	default boolean showAttackNotifications()
 	{
@@ -128,7 +175,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showDefenceNotifications",
 			name = "Defence",
 			description = "Should we show Defence notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 4
 	)
 	default boolean showDefenceNotifications()
 	{
@@ -139,7 +187,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showStrengthNotifications",
 			name = "Strength",
 			description = "Should we show Strength notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 5
 	)
 	default boolean showStrengthNotifications()
 	{
@@ -150,7 +199,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showHitpointsNotifications",
 			name = "Hitpoints",
 			description = "Should we show Hitpoints notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 6
 	)
 	default boolean showHitpointsNotifications()
 	{
@@ -161,7 +211,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showRangedNotifications",
 			name = "Ranged",
 			description = "Should we show Ranged notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 7
 	)
 	default boolean showRangedNotifications()
 	{
@@ -172,7 +223,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showPrayerNotifications",
 			name = "Prayer",
 			description = "Should we show Prayer notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 8
 	)
 	default boolean showPrayerNotifications()
 	{
@@ -183,7 +235,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showMagicNotifications",
 			name = "Magic",
 			description = "Should we show Magic notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 9
 	)
 	default boolean showMagicNotifications()
 	{
@@ -194,7 +247,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showCookingNotifications",
 			name = "Cooking",
 			description = "Should we show Cooking notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 10
 	)
 	default boolean showCookingNotifications()
 	{
@@ -205,7 +259,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showWoodcuttingNotifications",
 			name = "Woodcutting",
 			description = "Should we show Woodcutting notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 11
 	)
 	default boolean showWoodcuttingNotifications()
 	{
@@ -216,7 +271,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showFletchingNotifications",
 			name = "Fletching",
 			description = "Should we show Fletching notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 12
 	)
 	default boolean showFletchingNotifications()
 	{
@@ -227,7 +283,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showFishingNotifications",
 			name = "Fishing",
 			description = "Should we show Fishing notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 13
 	)
 	default boolean showFishingNotifications()
 	{
@@ -238,7 +295,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showFiremakingNotifications",
 			name = "Firemaking",
 			description = "Should we show Firemaking notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 14
 	)
 	default boolean showFiremakingNotifications()
 	{
@@ -250,7 +308,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showCraftingNotifications",
 			name = "Crafting",
 			description = "Should we show Crafting notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 15
 	)
 	default boolean showCraftingNotifications()
 	{
@@ -261,7 +320,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showSmithingNotifications",
 			name = "Smithing",
 			description = "Should we show Smithing notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 16
 	)
 	default boolean showSmithingNotifications()
 	{
@@ -272,7 +332,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showMiningNotifications",
 			name = "Mining",
 			description = "Should we show Mining notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 17
 	)
 	default boolean showMiningNotifications()
 	{
@@ -283,7 +344,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showHerbloreNotifications",
 			name = "Herblore",
 			description = "Should we show Herblore notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 18
 	)
 	default boolean showHerbloreNotifications()
 	{
@@ -294,7 +356,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showAgilityNotifications",
 			name = "Agility",
 			description = "Should we show Agility notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 19
 	)
 	default boolean showAgilityNotifications()
 	{
@@ -305,7 +368,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showThievingNotifications",
 			name = "Thieving",
 			description = "Should we show Thieving notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 20
 	)
 	default boolean showThievingNotifications()
 	{
@@ -316,7 +380,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showSlayerNotifications",
 			name = "Slayer",
 			description = "Should we show Slayer notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 21
 	)
 	default boolean showSlayerNotifications()
 	{
@@ -327,7 +392,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showFarmingNotifications",
 			name = "Farming",
 			description = "Should we show Farming notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 22
 	)
 	default boolean showFarmingNotifications()
 	{
@@ -338,7 +404,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showRunecraftNotifications",
 			name = "Runecraft",
 			description = "Should we show Runecraft notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 23
 	)
 	default boolean showRunecraftNotifications()
 	{
@@ -349,7 +416,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showHunterNotifications",
 			name = "Hunter",
 			description = "Should we show Hunter notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 24
 	)
 	default boolean showHunterNotifications()
 	{
@@ -360,7 +428,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showConstructionNotifications",
 			name = "Construction",
 			description = "Should we show Construction notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 25
 	)
 	default boolean showConstructionNotifications()
 	{
@@ -371,7 +440,8 @@ public interface HiscoreNotificationsConfig extends Config
 			keyName = "showSailingNotifications",
 			name = "Sailing",
 			description = "Should we show Sailing notifications?",
-			section = SECTION_SKILLS
+			section = SECTION_SKILLS,
+			position = 26
 	)
 	default boolean showSailingNotifications()
 	{
@@ -379,9 +449,9 @@ public interface HiscoreNotificationsConfig extends Config
 	}
 
 	@ConfigSection(
-			name = "Skill Notifications",
-			description = "Settings for the notification boxes",
-			position = 400
+			name = "Skill Messages",
+			description = "Settings for the notification messages",
+			position = 500
 	)
 	String SECTION_NOTIFICATION = "notifications";
 	@ConfigItem(
@@ -404,19 +474,19 @@ public interface HiscoreNotificationsConfig extends Config
 	)
 	default String notificationLeaderboardRankText()
 	{
-		return "Achieved rank $rank in $skill,\nsurpassing $name!";
+		return "You are now rank $rank in $skill!";
 	}
 
 	@ConfigSection(
-			name = "Boss Notifications",
+			name = "Boss Messages",
 			description = "Settings for the notification boxes",
-			position = 500
+			position = 600
 	)
 	String SECTION_BOSS_NOTIFICATION = "bossNotifications";
 	@ConfigItem(
 			keyName = "notificationBossLeaderboardRankTitle",
 			name = "Title",
-			description = "Can include $rank, $kc, $player, and $boss variables.",
+			description = "Can include $rank, $kc, $passedkc, $player, and $boss variables.",
 			section = SECTION_BOSS_NOTIFICATION,
 			position = 1
 	)
@@ -427,12 +497,12 @@ public interface HiscoreNotificationsConfig extends Config
 	@ConfigItem(
 			keyName = "notificationBossLeaderboardRankText",
 			name = "Text",
-			description = "Can include $rank, $kc, $player, and $boss variables.",
+			description = "Can include $rank, $kc, $passedkc, $player, and $boss variables.",
 			section = SECTION_BOSS_NOTIFICATION,
 			position = 2
 	)
 	default String notificationBossLeaderboardRankText()
 	{
-		return "Achieved rank $rank at $boss with $kc KC,\nsurpassing $name!";
+		return "You are now rank $rank at $boss!";
 	}
 }

@@ -8,6 +8,7 @@ import com.malafel.hiscore.notifications.NotificationManager;
 import com.malafel.hiscore.util.RateLimitedHttpClientInterface;
 import com.malafel.hiscore.util.Util;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Skill;
@@ -28,6 +29,7 @@ import net.runelite.client.util.QuantityFormatter;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @PluginDescriptor(
@@ -185,7 +187,7 @@ public class HiscoreNotificationsPlugin extends Plugin
 		final List<SkillLeaderboardEntry> milestoneLeaderboardEntries = getMilestoneXpLeaderboardEntries(skill, previousXp, currentXp);
 		if (shouldNotifyForSkill(skill) && !milestoneLeaderboardEntries.isEmpty())
 		{
-			log.debug("Milestone leaderboard skill rank to notify for {}", skill.getName());
+			log.debug("Milestone leaderboard skill rank to pop-up for {}", skill.getName());
 
 			for (SkillLeaderboardEntry entry: milestoneLeaderboardEntries) {
 				notifySkillLeaderboard(skill, entry);
@@ -254,12 +256,24 @@ public class HiscoreNotificationsPlugin extends Plugin
 		String text = Util.replaceSkillLeaderboardValues(config.notificationLeaderboardRankText(), skill, leaderboardEntry);
 		int color = Util.getIntValue(JagexColors.DARK_ORANGE_INTERFACE_TEXT);
 
-		log.debug("Notify leaderboard milestone reached for {} to rank {} (xp {})",
+		log.debug("Pop-up leaderboard milestone reached for {} to rank {} (xp {})",
 				skill.getName(),
 				QuantityFormatter.formatNumber(leaderboardEntry.rank),
 				QuantityFormatter.formatNumber(leaderboardEntry.xp));
-		notifications.addNotification(title, text, color);
+
+		if (config.showSkillPopupNotifications()) {
+			notifications.addNotification(title, text, color);
+		}
+
+		String singleLineMessage =
+				text.replace("<br>", " ").replace("\n", " ").replace("  ", " ");
+
+		if (config.showSkillChatNotifications()) {
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", singleLineMessage, null, true);
+		}
 	}
+
+
 
 	/**
 	 * Check if we should notify for the given skill based off of our config settings.
@@ -284,11 +298,21 @@ public class HiscoreNotificationsPlugin extends Plugin
 		String text = Util.replaceBossLeaderboardValues(config.notificationBossLeaderboardRankText(), boss, leaderboardEntry);
 		int color = Util.getIntValue(JagexColors.DARK_ORANGE_INTERFACE_TEXT);
 
-		log.debug("Notify leaderboard milestone reached for {} to rank {} (kc {})",
+		log.debug("Pop-up leaderboard milestone reached for {} to rank {} (kc {})",
 				boss.chatCommandsLongName,
 				QuantityFormatter.formatNumber(leaderboardEntry.rank),
 				QuantityFormatter.formatNumber(leaderboardEntry.score));
-		notifications.addNotification(title, text, color);
+
+		if (config.showBossNotifications()) {
+			notifications.addNotification(title, text, color);
+		}
+
+		String singleLineMessage =
+				text.replace("<br>", " ").replace("\n", " ").replace("  ", " ");
+
+		if (config.showBossChatNotifications()) {
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", singleLineMessage, null, true);
+		}
 	}
 
 	/**

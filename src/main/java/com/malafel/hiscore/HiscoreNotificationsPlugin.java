@@ -208,7 +208,7 @@ public class HiscoreNotificationsPlugin extends Plugin
 
 		leaderboardManager.enableBossTracking(bossInfo);
 		leaderboardManager.updateBossKc(bossInfo, kc);
-		final List<BossLeaderboardEntry> milestoneLeaderboardEntries = getMilestoneKcLeaderboardEntries(bossInfo, kc);
+		final List<BossLeaderboardEntry> milestoneLeaderboardEntries = getMilestoneKcLeaderboardEntries(bossInfo, kc-1, kc);
 		if (shouldNotifyForBoss(bossInfo) && !milestoneLeaderboardEntries.isEmpty())
 		{
 			log.debug("Milestone leaderboard boss KC rank to notify for {}", bossInfo.chatCommandsLongName);
@@ -238,8 +238,8 @@ public class HiscoreNotificationsPlugin extends Plugin
 	 * @param currentKc int
 	 * @return List<LeaderboardEntry>
 	 */
-	private List<BossLeaderboardEntry> getMilestoneKcLeaderboardEntries(BossInfo boss, int currentKc) {
-		return leaderboardManager.getMilestoneBossLeaderboardEntries(boss, currentKc);
+	private List<BossLeaderboardEntry> getMilestoneKcLeaderboardEntries(BossInfo boss, int prevKc, int currentKc) {
+		return leaderboardManager.getMilestoneBossLeaderboardEntries(boss, prevKc, currentKc);
 	}
 
 	/**

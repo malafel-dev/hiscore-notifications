@@ -126,10 +126,10 @@ public class LeaderboardManager {
      * @param currentKc int
      * @return List<LeaderboardEntry>
      */
-    public List<BossLeaderboardEntry> getMilestoneBossLeaderboardEntries(BossInfo boss, int currentKc) {
+    public List<BossLeaderboardEntry> getMilestoneBossLeaderboardEntries(BossInfo boss, int prevKc, int currentKc) {
         LeaderboardBossState bossState = bossStates.get(boss);
         return bossState.validLeaderboardEntries.stream()
-                .filter(entry -> entry.score < currentKc)
+                .filter(entry -> entry.score >= prevKc && entry.score < currentKc)
                 .distinct()
                 .collect(Collectors.toList());
     }

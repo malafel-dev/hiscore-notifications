@@ -8,8 +8,6 @@ import net.runelite.api.Skill;
 import okhttp3.*;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 

@@ -21,8 +21,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import static java.lang.Math.min;
-
 /**
  * Issues requests and processes results from the OSRS hiscores website for each tracked skill to maintain lists of XP
  * milestones. Also controls rate limiting and retries, to limit strain on the hiscores page.

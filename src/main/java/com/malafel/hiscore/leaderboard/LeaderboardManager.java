@@ -249,7 +249,7 @@ public class LeaderboardManager {
                 processSkill(s);
             }
         }
-        if (config.showBossNotifications()) {
+        if (config.showBossNotifications() || config.showBossChatNotifications()) {
             for (BossInfo b: BossInfo.values()) {
                 if (b == BossInfo.INVALID) {
                     continue;

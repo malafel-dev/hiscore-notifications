@@ -10,6 +10,7 @@ import java.util.List;
  */
 @Value
 public class SkillLeaderboardResult {
+
     private List<SkillLeaderboardEntry> entries;
 
     public List<SkillLeaderboardEntry> getEntries() {

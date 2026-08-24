@@ -55,6 +55,9 @@ public class LeaderboardManager {
     @Inject
     private HiscoreNotificationsConfig config;
 
+    @Inject
+    private BossInfoRegistry bossInfoRegistry;
+
     private static final int MIN_LEADERBOARD_SIZE = 2;
     private static final int MAX_REQUEST_RETRIES = 3;
     // The minimum level required in a skill before leaderboard tracking begins. The lower the player's level, the more
@@ -64,7 +67,7 @@ public class LeaderboardManager {
     private static final int MIN_REQUIRED_LEVEL_FOR_TRACKING = 60;
 
     // State machine indicating the 3 main stages of operation, and an error state that ceases operation.
-    private LeaderboardManagerState state = LeaderboardManagerState.AWAITING_PLAYER_NAME;
+    private LeaderboardManagerState state = LeaderboardManagerState.AWAITING_BOSS_INFO;
 
     // Future that is completed after the player's hiscore data is fetched from the hiscore server.
     private Future<HiscoreResult> hiscoreFuture = null;
@@ -76,7 +79,7 @@ public class LeaderboardManager {
     private int hiscoreRetryCount = 0;
 
     private final Map<Skill, LeaderboardSkillState> skillStates = new EnumMap<>(Skill.class);
-    private final Map<BossInfo, LeaderboardBossState> bossStates = new EnumMap<>(BossInfo.class);
+    private final HashMap<String, LeaderboardBossState> bossStates = new HashMap<>();
 
     private boolean wasEnabled = false;
 
@@ -86,6 +89,9 @@ public class LeaderboardManager {
 
     public void process(GameTick event) {
         switch (state) {
+            case AWAITING_BOSS_INFO:
+                processAwaitingBossInfo();
+                break;
             case AWAITING_PLAYER_NAME:
                 processAwaitingPlayerName();
                 break;
@@ -125,7 +131,7 @@ public class LeaderboardManager {
      * @return List<LeaderboardEntry>
      */
     public List<BossLeaderboardEntry> getMilestoneBossLeaderboardEntries(BossInfo boss, int prevKc, int currentKc) {
-        LeaderboardBossState bossState = bossStates.get(boss);
+        LeaderboardBossState bossState = bossStates.get(boss.hiscoreSkillName);
         return bossState.validLeaderboardEntries.stream()
                 .filter(entry -> entry.score >= prevKc && entry.score < currentKc)
                 .distinct()
@@ -139,15 +145,24 @@ public class LeaderboardManager {
         if (leaderboardClient != null) {
             leaderboardClient.reset();
         }
-        state = LeaderboardManagerState.AWAITING_PLAYER_NAME;
+        state = LeaderboardManagerState.AWAITING_BOSS_INFO;
         hiscoreFuture = null;
         playerHiscore = null;
         hiscoreRetryCount = 0;
         for (Skill s: Skill.values()) {
             skillStates.put(s, new LeaderboardSkillState());
         }
-        for (BossInfo b: BossInfo.values()) {
-            bossStates.put(b, new LeaderboardBossState());
+        // Cannot populate bossStates until we know the full list of bosses is available. Resetting the state to
+        // AWAITING_BOSS_INFO, as done above makes sure the bossStates map is properly reset.
+        bossStates.clear();
+    }
+
+    private void processAwaitingBossInfo() {
+        if (bossInfoRegistry.isReady()) {
+            for (BossInfo b: bossInfoRegistry.getAllBosses()) {
+                bossStates.put(b.hiscoreSkillName, new LeaderboardBossState());
+            }
+            state = LeaderboardManagerState.AWAITING_PLAYER_NAME;
         }
     }
 
@@ -169,12 +184,12 @@ public class LeaderboardManager {
     }
 
     public void enableBossTracking(BossInfo boss) {
-        var bossState = bossStates.get(boss);
+        var bossState = bossStates.get(boss.hiscoreSkillName);
         bossState.isActive = true;
     }
 
     public void updateBossKc(BossInfo boss, int kc) {
-        var bossState = bossStates.get(boss);
+        var bossState = bossStates.get(boss.hiscoreSkillName);
         bossState.currentKc = kc;
     }
 
@@ -223,18 +238,18 @@ public class LeaderboardManager {
             }
         }
 
-        for (BossInfo b: BossInfo.values()) {
-            if (b == BossInfo.INVALID) {
+        for (BossInfo b: bossInfoRegistry.getAllBosses()) {
+            if (!b.isValid()) {
                 continue;
             }
 
             try {
-                var bossResult = playerHiscore.getSkill(HiscoreSkill.valueOf(b.name()));
-                bossStates.get(b).nextRankToMeasure = bossResult.getRank() - 1;
-                bossStates.get(b).currentKc = bossResult.getLevel();
+                var bossResult = playerHiscore.getSkill(HiscoreSkill.valueOf(b.hiscoreSkillName));
+                bossStates.get(b.hiscoreSkillName).nextRankToMeasure = bossResult.getRank() - 1;
+                bossStates.get(b.hiscoreSkillName).currentKc = bossResult.getLevel();
             } catch (Exception e) {
-                log.warn("Missing hiscore data for {}. Either KC is too low for a rank, or the wrong leaderboard is being used. Check Hiscore Notifications plugin config.", b.name(), e);
-                bossStates.get(b).isDisabledFromError = true;
+                log.warn("Missing hiscore data for {}. Either KC is too low for a rank, or the wrong leaderboard is being used. Check Hiscore Notifications plugin config.", b.hiscoreSkillName, e);
+                bossStates.get(b.hiscoreSkillName).isDisabledFromError = true;
             }
         }
     }
@@ -250,8 +265,8 @@ public class LeaderboardManager {
             }
         }
         if (config.showBossNotifications() || config.showBossChatNotifications()) {
-            for (BossInfo b: BossInfo.values()) {
-                if (b == BossInfo.INVALID) {
+            for (BossInfo b: bossInfoRegistry.getAllBosses()) {
+                if (!b.isValid()) {
                     continue;
                 }
                 processBoss(b);
@@ -367,7 +382,7 @@ public class LeaderboardManager {
     }
 
     private void processBoss(BossInfo boss) {
-        LeaderboardBossState bossState = bossStates.get(boss);
+        LeaderboardBossState bossState = bossStates.get(boss.hiscoreSkillName);
         if (bossState.isDisabledFromError ||
             !bossState.isActive ||
             bossState.nextRankToMeasure < 1) {
@@ -482,11 +497,11 @@ public class LeaderboardManager {
     }
 
     private void requestMoreLeaderboardDataForBoss(BossInfo boss) {
-        if (boss == BossInfo.INVALID) {
+        if (!boss.isValid()) {
             return;
         }
 
-        LeaderboardBossState bossState = bossStates.get(boss);
+        LeaderboardBossState bossState = bossStates.get(boss.hiscoreSkillName);
         if (bossState.leaderboardFuture != null) {
             log.warn("Attempted to fetch more leaderboard data for boss: {} while a request was already pending. Disabling future lookups.", boss);
             bossState.isDisabledFromError = true;

@@ -6,8 +6,10 @@ package com.malafel.hiscore.leaderboard;
  * See LeaderboardManager for implementation details and notes.
  */
 public enum LeaderboardManagerState {
-    // The first step is for the LeaderboardManager to get the player's name for leaderboard lookup. This is not
-    // available until the player is logged in and gameplay is active.
+    // For simplicity, fetch boss info as a json from github before anything else can be done.
+    AWAITING_BOSS_INFO,
+    // The first step after immutable data is avaialble is for the LeaderboardManager to get the player's name for
+    // leaderboard lookup. This is not available until the player is logged in and gameplay is active.
     AWAITING_PLAYER_NAME,
     // After the player name is available, the LeaderboardManager immediately issues a request to the hiscores API for
     // that player's full hiscore state, which is kept steady until the player logs out or hops.

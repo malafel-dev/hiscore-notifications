@@ -52,6 +52,8 @@ public class HiscoreNotificationsPlugin extends Plugin
 	@Inject
 	private NotificationManager notifications;
 
+	@Inject BossInfoRegistry bossInfoRegistry;
+
 	@Inject
 	private LeaderboardManager leaderboardManager;
 
@@ -116,6 +118,7 @@ public class HiscoreNotificationsPlugin extends Plugin
 
 	@Subscribe
 	public void onGameTick(GameTick event) {
+		bossInfoRegistry.process(event);
 		clientInterface.process(event);
 		leaderboardManager.process(event);
 	}
@@ -194,8 +197,14 @@ public class HiscoreNotificationsPlugin extends Plugin
 	}
 
 	private void onKcChanged(String boss, int kc) {
-		final BossInfo bossInfo = BossInfo.fromName(boss);
-		if (bossInfo == BossInfo.INVALID) {
+		if (!bossInfoRegistry.isReady()) {
+			// It overcomplicates things to work around the list of bosses not being present when we get our first boss
+			// kc of the session. Just ignore KC until the boss registry is populated.
+			return;
+		}
+
+		final BossInfo bossInfo = bossInfoRegistry.fromChatCommandsLongName(boss);
+		if (!bossInfo.isValid()) {
 			return;
 		}
 

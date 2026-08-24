@@ -1,0 +1,287 @@
+
+[
+    {
+        "chatCommandsLongName":"Abyssal Sire",
+        "tableNumber":20
+    },
+    {
+        "chatCommandsLongName":"Alchemical Hydra",
+        "tableNumber":21
+    },
+    {
+        "chatCommandsLongName":"Amoxliatl",
+        "tableNumber":22
+    },
+    {
+        "chatCommandsLongName":"Araxxor",
+        "tableNumber":23
+    },
+    {
+        "chatCommandsLongName":"Artio",
+        "tableNumber":24
+    },
+    {
+        "chatCommandsLongName":"Barrows Chests",
+        "tableNumber":25
+    },
+    {
+        "chatCommandsLongName":"Brutus",
+        "tableNumber":26
+    },
+    {
+        "chatCommandsLongName":"Bryophyta",
+        "tableNumber":27
+    },
+    {
+        "chatCommandsLongName":"Callisto",
+        "tableNumber":28
+    },
+    {
+        "chatCommandsLongName":"Calvar'ion",
+        "tableNumber":29
+    },
+    {
+        "chatCommandsLongName":"Cerberus",
+        "tableNumber":30
+    },
+    {
+        "chatCommandsLongName":"Chambers of Xeric",
+        "tableNumber":31
+    },
+    {
+        "chatCommandsLongName":"Chambers of Xeric Challenge Mode",
+        "tableNumber":32
+    },
+    {
+        "chatCommandsLongName":"Chaos Elemental",
+        "tableNumber":33
+    },
+    {
+        "chatCommandsLongName":"Chaos Fanatic",
+        "tableNumber":34
+    },
+    {
+        "chatCommandsLongName":"Commander Zilyana",
+        "tableNumber":35
+    },
+    {
+        "chatCommandsLongName":"Corporeal Beast",
+        "tableNumber":36
+    },
+    {
+        "chatCommandsLongName":"Crazy Archaeologist",
+        "tableNumber":37
+    },
+    {
+        "chatCommandsLongName":"Dagannoth Prime",
+        "tableNumber":38
+    },
+    {
+        "chatCommandsLongName":"Dagannoth Rex",
+        "tableNumber":39
+    },
+    {
+        "chatCommandsLongName":"Dagannoth Supreme",
+        "tableNumber":40
+    },
+    {
+        "chatCommandsLongName":"Deranged Archaeologist",
+        "tableNumber":41
+    },
+    {
+        "chatCommandsLongName":"Doom of Mokhaiotl",
+        "tableNumber":42
+    },
+    {
+        "chatCommandsLongName":"Duke Sucellus",
+        "tableNumber":43
+    },
+    {
+        "chatCommandsLongName":"General Graardor",
+        "tableNumber":44
+    },
+    {
+        "chatCommandsLongName":"Giant Mole",
+        "tableNumber":45
+    },
+    {
+        "chatCommandsLongName":"Grotesque Guardians",
+        "tableNumber":46
+    },
+    {
+        "chatCommandsLongName":"Hespori",
+        "tableNumber":47
+    },
+    {
+        "chatCommandsLongName":"Kalphite Queen",
+        "tableNumber":48
+    },
+    {
+        "chatCommandsLongName":"King Black Dragon",
+        "tableNumber":49
+    },
+    {
+        "chatCommandsLongName":"Kraken",
+        "tableNumber":50
+    },
+    {
+        "chatCommandsLongName":"Kree'Arra",
+        "tableNumber":51
+    },
+    {
+        "chatCommandsLongName":"K'ril Tsutsaroth",
+        "tableNumber":52
+    },
+    {
+        "chatCommandsLongName":"Lunar Chest",
+        "tableNumber":53
+    },
+    {
+        "chatCommandsLongName":"Mad Angel",
+        "tableNumber": 54
+    },
+    {
+        "chatCommandsLongName":"Mimic",
+        "tableNumber":55
+    },
+    {
+        "chatCommandsLongName":"Maggot King",
+        "tableNumber": 56
+    },
+    {
+        "chatCommandsLongName":"Nex",
+        "tableNumber":57
+    },
+    {
+        "chatCommandsLongName":"Nightmare",
+        "tableNumber":58
+    },
+    {
+        "chatCommandsLongName":"Phosani's Nightmare",
+        "tableNumber":59
+    },
+    {
+        "chatCommandsLongName":"Obor",
+        "tableNumber":60
+    },
+    {
+        "chatCommandsLongName":"Phantom Muspah",
+        "tableNumber":61
+    },
+    {
+        "chatCommandsLongName":"Sarachnis",
+        "tableNumber":62
+    },
+    {
+        "chatCommandsLongName":"Scorpia",
+        "tableNumber":63
+    },
+    {
+        "chatCommandsLongName":"Scurrius",
+        "tableNumber":64
+    },
+    {
+        "chatCommandsLongName":"Shellbane Gryphon",
+        "tableNumber":65
+    },
+    {
+        "chatCommandsLongName":"Skotizo",
+        "tableNumber":66
+    },
+    {
+        "chatCommandsLongName":"Sol Heredit",
+        "tableNumber":67
+    },
+    {
+        "chatCommandsLongName":"Spindel",
+        "tableNumber":68
+    },
+    {
+        "chatCommandsLongName":"Tempoross",
+        "tableNumber":69
+    },
+    {
+        "chatCommandsLongName":"Gauntlet",
+        "tableNumber":70
+    },
+    {
+        "chatCommandsLongName":"Corrupted Gauntlet",
+        "tableNumber":71
+    },
+    {
+        "chatCommandsLongName":"Hueycoatl",
+        "tableNumber":72
+    },
+    {
+        "chatCommandsLongName":"Leviathan",
+        "tableNumber":73
+    },
+    {
+        "chatCommandsLongName":"The Royal Titans",
+        "tableNumber":74
+    },
+    {
+        "chatCommandsLongName":"Whisperer",
+        "tableNumber":75
+    },
+    {
+        "chatCommandsLongName":"Theatre of Blood",
+        "tableNumber":76
+    },
+    {
+        "chatCommandsLongName":"Theatre of Blood Hard Mode",
+        "tableNumber":77
+    },
+    {
+        "chatCommandsLongName":"Thermonuclear Smoke Devil",
+        "tableNumber":78
+    },
+    {
+        "chatCommandsLongName":"Tombs of Amascut",
+        "tableNumber":79
+    },
+    {
+        "chatCommandsLongName":"Tombs of Amascut Expert Mode",
+        "tableNumber":80
+    },
+    {
+        "chatCommandsLongName":"TzKal-Zuk",
+        "tableNumber":81
+    },
+    {
+        "chatCommandsLongName":"TzTok-Jad",
+        "tableNumber":82
+    },
+    {
+        "chatCommandsLongName":"Vardorvis",
+        "tableNumber":83
+    },
+    {
+        "chatCommandsLongName":"Venenatis",
+        "tableNumber":84
+    },
+    {
+        "chatCommandsLongName":"Vet'ion",
+        "tableNumber":85
+    },
+    {
+        "chatCommandsLongName":"Vorkath",
+        "tableNumber":86
+    },
+    {
+        "chatCommandsLongName":"Wintertodt",
+        "tableNumber":87
+    },
+    {
+        "chatCommandsLongName":"Yama",
+        "tableNumber":88
+    },
+    {
+        "chatCommandsLongName":"Zalcano",
+        "tableNumber":89
+    },
+    {
+        "chatCommandsLongName":"Zulrah",
+        "tableNumber":90
+    }
+]

@@ -1,286 +1,356 @@
-
 [
     {
+        "hiscoreSkillName":"ABYSSAL_SIRE",
         "chatCommandsLongName":"Abyssal Sire",
         "tableNumber":20
     },
     {
+        "hiscoreSkillName":"ALCHEMICAL_HYDRA",
         "chatCommandsLongName":"Alchemical Hydra",
         "tableNumber":21
     },
     {
+        "hiscoreSkillName":"AMOXLIATL",
         "chatCommandsLongName":"Amoxliatl",
         "tableNumber":22
     },
     {
+        "hiscoreSkillName":"ARAXXOR",
         "chatCommandsLongName":"Araxxor",
         "tableNumber":23
     },
     {
+        "hiscoreSkillName":"ARTIO",
         "chatCommandsLongName":"Artio",
         "tableNumber":24
     },
     {
+        "hiscoreSkillName":"BARROWS_CHESTS",
         "chatCommandsLongName":"Barrows Chests",
         "tableNumber":25
     },
     {
+        "hiscoreSkillName":"BRUTUS",
         "chatCommandsLongName":"Brutus",
         "tableNumber":26
     },
     {
+        "hiscoreSkillName":"BRYOPHYTA",
         "chatCommandsLongName":"Bryophyta",
         "tableNumber":27
     },
     {
+        "hiscoreSkillName":"CALLISTO",
         "chatCommandsLongName":"Callisto",
         "tableNumber":28
     },
     {
+        "hiscoreSkillName":"CALVARION",
         "chatCommandsLongName":"Calvar'ion",
         "tableNumber":29
     },
     {
+        "hiscoreSkillName":"CERBERUS",
         "chatCommandsLongName":"Cerberus",
         "tableNumber":30
     },
     {
+        "hiscoreSkillName":"CHAMBERS_OF_XERIC",
         "chatCommandsLongName":"Chambers of Xeric",
         "tableNumber":31
     },
     {
+        "hiscoreSkillName":"CHAMBERS_OF_XERIC_CHALLENGE_MODE",
         "chatCommandsLongName":"Chambers of Xeric Challenge Mode",
         "tableNumber":32
     },
     {
+        "hiscoreSkillName":"CHAOS_ELEMENTAL",
         "chatCommandsLongName":"Chaos Elemental",
         "tableNumber":33
     },
     {
+        "hiscoreSkillName":"CHAOS_FANATIC",
         "chatCommandsLongName":"Chaos Fanatic",
         "tableNumber":34
     },
     {
+        "hiscoreSkillName":"COMMANDER_ZILYANA",
         "chatCommandsLongName":"Commander Zilyana",
         "tableNumber":35
     },
     {
+        "hiscoreSkillName":"CORPOREAL_BEAST",
         "chatCommandsLongName":"Corporeal Beast",
         "tableNumber":36
     },
     {
+        "hiscoreSkillName":"CRAZY_ARCHAEOLOGIST",
         "chatCommandsLongName":"Crazy Archaeologist",
         "tableNumber":37
     },
     {
+        "hiscoreSkillName":"DAGANNOTH_PRIME",
         "chatCommandsLongName":"Dagannoth Prime",
         "tableNumber":38
     },
     {
+        "hiscoreSkillName":"DAGANNOTH_REX",
         "chatCommandsLongName":"Dagannoth Rex",
         "tableNumber":39
     },
     {
+        "hiscoreSkillName":"DAGANNOTH_SUPREME",
         "chatCommandsLongName":"Dagannoth Supreme",
         "tableNumber":40
     },
     {
+        "hiscoreSkillName":"DERANGED_ARCHAEOLOGIST",
         "chatCommandsLongName":"Deranged Archaeologist",
         "tableNumber":41
     },
     {
+        "hiscoreSkillName":"DOOM_OF_MOKHAIOTL",
         "chatCommandsLongName":"Doom of Mokhaiotl",
         "tableNumber":42
     },
     {
+        "hiscoreSkillName":"DUKE_SUCELLUS",
         "chatCommandsLongName":"Duke Sucellus",
         "tableNumber":43
     },
     {
+        "hiscoreSkillName":"GENERAL_GRAARDOR",
         "chatCommandsLongName":"General Graardor",
         "tableNumber":44
     },
     {
+        "hiscoreSkillName":"GIANT_MOLE",
         "chatCommandsLongName":"Giant Mole",
         "tableNumber":45
     },
     {
+        "hiscoreSkillName":"GROTESQUE_GUARDIANS",
         "chatCommandsLongName":"Grotesque Guardians",
         "tableNumber":46
     },
     {
+        "hiscoreSkillName":"HESPORI",
         "chatCommandsLongName":"Hespori",
         "tableNumber":47
     },
     {
+        "hiscoreSkillName":"KALPHITE_QUEEN",
         "chatCommandsLongName":"Kalphite Queen",
         "tableNumber":48
     },
     {
+        "hiscoreSkillName":"KING_BLACK_DRAGON",
         "chatCommandsLongName":"King Black Dragon",
         "tableNumber":49
     },
     {
+        "hiscoreSkillName":"KRAKEN",
         "chatCommandsLongName":"Kraken",
         "tableNumber":50
     },
     {
+        "hiscoreSkillName":"KREEARRA",
         "chatCommandsLongName":"Kree'Arra",
         "tableNumber":51
     },
     {
+        "hiscoreSkillName":"KRIL_TSUTSAROTH",
         "chatCommandsLongName":"K'ril Tsutsaroth",
         "tableNumber":52
     },
     {
+        "hiscoreSkillName":"LUNAR_CHESTS",
         "chatCommandsLongName":"Lunar Chest",
         "tableNumber":53
     },
     {
+        "hiscoreSkillName":"MAD_ANGEL",
         "chatCommandsLongName":"Mad Angel",
         "tableNumber": 54
     },
     {
+        "hiscoreSkillName":"MIMIC",
         "chatCommandsLongName":"Mimic",
         "tableNumber":55
     },
     {
+        "hiscoreSkillName":"MAGGOT_KING",
         "chatCommandsLongName":"Maggot King",
         "tableNumber": 56
     },
     {
+        "hiscoreSkillName":"NEX",
         "chatCommandsLongName":"Nex",
         "tableNumber":57
     },
     {
+        "hiscoreSkillName":"NIGHTMARE",
         "chatCommandsLongName":"Nightmare",
         "tableNumber":58
     },
     {
+        "hiscoreSkillName":"PHOSANIS_NIGHTMARE",
         "chatCommandsLongName":"Phosani's Nightmare",
         "tableNumber":59
     },
     {
+        "hiscoreSkillName":"OBOR",
         "chatCommandsLongName":"Obor",
         "tableNumber":60
     },
     {
+        "hiscoreSkillName":"PHANTOM_MUSPAH",
         "chatCommandsLongName":"Phantom Muspah",
         "tableNumber":61
     },
     {
+        "hiscoreSkillName":"SARACHNIS",
         "chatCommandsLongName":"Sarachnis",
         "tableNumber":62
     },
     {
+        "hiscoreSkillName":"SCORPIA",
         "chatCommandsLongName":"Scorpia",
         "tableNumber":63
     },
     {
+        "hiscoreSkillName":"SCURRIUS",
         "chatCommandsLongName":"Scurrius",
         "tableNumber":64
     },
     {
+        "hiscoreSkillName":"SHELLBANE_GRYPHON",
         "chatCommandsLongName":"Shellbane Gryphon",
         "tableNumber":65
     },
     {
+        "hiscoreSkillName":"SKOTIZO",
         "chatCommandsLongName":"Skotizo",
         "tableNumber":66
     },
     {
+        "hiscoreSkillName":"SOL_HEREDIT",
         "chatCommandsLongName":"Sol Heredit",
         "tableNumber":67
     },
     {
+        "hiscoreSkillName":"SPINDEL",
         "chatCommandsLongName":"Spindel",
         "tableNumber":68
     },
     {
+        "hiscoreSkillName":"TEMPOROSS",
         "chatCommandsLongName":"Tempoross",
         "tableNumber":69
     },
     {
+        "hiscoreSkillName":"THE_GAUNTLET",
         "chatCommandsLongName":"Gauntlet",
         "tableNumber":70
     },
     {
+        "hiscoreSkillName":"THE_CORRUPTED_GAUNTLET",
         "chatCommandsLongName":"Corrupted Gauntlet",
         "tableNumber":71
     },
     {
+        "hiscoreSkillName":"THE_HUEYCOATL",
         "chatCommandsLongName":"Hueycoatl",
         "tableNumber":72
     },
     {
+        "hiscoreSkillName":"THE_LEVIATHAN",
         "chatCommandsLongName":"Leviathan",
         "tableNumber":73
     },
     {
+        "hiscoreSkillName":"THE_ROYAL_TITANS",
         "chatCommandsLongName":"The Royal Titans",
         "tableNumber":74
     },
     {
+        "hiscoreSkillName":"THE_WHISPERER",
         "chatCommandsLongName":"Whisperer",
         "tableNumber":75
     },
     {
+        "hiscoreSkillName":"THEATRE_OF_BLOOD",
         "chatCommandsLongName":"Theatre of Blood",
         "tableNumber":76
     },
     {
+        "hiscoreSkillName":"THEATRE_OF_BLOOD_HARD_MODE",
         "chatCommandsLongName":"Theatre of Blood Hard Mode",
         "tableNumber":77
     },
     {
+        "hiscoreSkillName":"THERMONUCLEAR_SMOKE_DEVIL",
         "chatCommandsLongName":"Thermonuclear Smoke Devil",
         "tableNumber":78
     },
     {
+        "hiscoreSkillName":"TOMBS_OF_AMASCUT",
         "chatCommandsLongName":"Tombs of Amascut",
         "tableNumber":79
     },
     {
+        "hiscoreSkillName":"TOMBS_OF_AMASCUT_EXPERT",
         "chatCommandsLongName":"Tombs of Amascut Expert Mode",
         "tableNumber":80
     },
     {
+        "hiscoreSkillName":"TZKAL_ZUK",
         "chatCommandsLongName":"TzKal-Zuk",
         "tableNumber":81
     },
     {
+        "hiscoreSkillName":"TZTOK_JAD",
         "chatCommandsLongName":"TzTok-Jad",
         "tableNumber":82
     },
     {
+        "hiscoreSkillName":"VARDORVIS",
         "chatCommandsLongName":"Vardorvis",
         "tableNumber":83
     },
     {
+        "hiscoreSkillName":"VENENATIS",
         "chatCommandsLongName":"Venenatis",
         "tableNumber":84
     },
     {
+        "hiscoreSkillName":"VETION",
         "chatCommandsLongName":"Vet'ion",
         "tableNumber":85
     },
     {
+        "hiscoreSkillName":"VORKATH",
         "chatCommandsLongName":"Vorkath",
         "tableNumber":86
     },
     {
+        "hiscoreSkillName":"WINTERTODT",
         "chatCommandsLongName":"Wintertodt",
         "tableNumber":87
     },
     {
+        "hiscoreSkillName":"YAMA",
         "chatCommandsLongName":"Yama",
         "tableNumber":88
     },
     {
+        "hiscoreSkillName":"ZALCANO",
         "chatCommandsLongName":"Zalcano",
         "tableNumber":89
     },
     {
+        "hiscoreSkillName":"ZULRAH",
         "chatCommandsLongName":"Zulrah",
         "tableNumber":90
     }

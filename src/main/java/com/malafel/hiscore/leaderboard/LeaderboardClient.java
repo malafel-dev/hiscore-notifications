@@ -1,7 +1,6 @@
 package com.malafel.hiscore.leaderboard;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.malafel.hiscore.util.RateLimitedHttpClientInterface;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +53,7 @@ public class LeaderboardClient {
             @SneakyThrows
             @Override
             public SkillLeaderboardResult apply(Response response) {
-                LeaderboardAPIEntry[] apiEntries = new GsonBuilder().create().fromJson(response.body().charStream(), LeaderboardAPIEntry[].class);
+                LeaderboardAPIEntry[] apiEntries = gson.newBuilder().create().fromJson(response.body().charStream(), LeaderboardAPIEntry[].class);
                 ArrayList<SkillLeaderboardEntry> entries = new ArrayList<SkillLeaderboardEntry>();
                 for (LeaderboardAPIEntry entry: apiEntries) {
                     entries.add(new SkillLeaderboardEntry(entry));
@@ -80,7 +79,7 @@ public class LeaderboardClient {
             @SneakyThrows
             @Override
             public BossLeaderboardResult apply(Response response) {
-                LeaderboardAPIEntry[] apiEntries = new GsonBuilder().create().fromJson(response.body().charStream(), LeaderboardAPIEntry[].class);
+                LeaderboardAPIEntry[] apiEntries = gson.newBuilder().create().fromJson(response.body().charStream(), LeaderboardAPIEntry[].class);
                 ArrayList<BossLeaderboardEntry> entries = new ArrayList<BossLeaderboardEntry>();
                 for (LeaderboardAPIEntry entry: apiEntries) {
                     entries.add(new BossLeaderboardEntry(entry));

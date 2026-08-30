@@ -1,7 +1,6 @@
 package com.malafel.hiscore.leaderboard;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.malafel.hiscore.util.RateLimitedHttpClientInterface;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -49,7 +48,7 @@ public class BossInfoRegistry {
                     @SneakyThrows
                     @Override
                     public List<BossInfo> apply(Response response) {
-                        List<BossInfo> bossInfo = List.of(new GsonBuilder().create().fromJson(
+                        List<BossInfo> bossInfo = List.of(gson.newBuilder().create().fromJson(
                                 response.body().charStream(), BossInfo[].class));
                         return bossInfo;
                     }

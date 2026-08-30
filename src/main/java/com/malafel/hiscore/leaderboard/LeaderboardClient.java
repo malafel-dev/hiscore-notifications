@@ -19,21 +19,18 @@ import java.util.function.Function;
  */
 @Slf4j
 public class LeaderboardClient {
-    private final OkHttpClient client;
-    private final Gson gson;
-    private final RateLimitedHttpClientInterface clientInterface;
+    @Inject
+    private OkHttpClient client;
+
+    @Inject
+    private Gson gson;
+
+    @Inject
+    private RateLimitedHttpClientInterface clientInterface;
 
     private static final int SKILL_CATEGORY = 0;
     private static final int BOSS_CATEGORY = 1;
     private static final int PAGE_SIZE = 25;
-
-    @Inject
-    private LeaderboardClient(OkHttpClient client, Gson gson, RateLimitedHttpClientInterface clientInterface)
-    {
-        this.client = client;
-        this.gson = gson;
-        this.clientInterface = clientInterface;
-    }
 
     public void reset() {
         if (clientInterface != null) {

@@ -33,15 +33,11 @@ public class BossInfoRegistry {
     private CompletableFuture<List<BossInfo>> bossInfoResponse;
     private int retryCount = 0;
 
-    private final RateLimitedHttpClientInterface clientInterface;
-    private final Gson gson;
+    @Inject
+    private RateLimitedHttpClientInterface clientInterface;
 
     @Inject
-    private BossInfoRegistry(RateLimitedHttpClientInterface clientInterface, Gson gson)
-    {
-        this.clientInterface = clientInterface;
-        this.gson = gson;
-    }
+    private Gson gson;
 
     public void process(GameTick event) {
         if (!ready) {
